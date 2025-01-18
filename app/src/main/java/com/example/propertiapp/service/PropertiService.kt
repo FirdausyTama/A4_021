@@ -25,12 +25,12 @@ interface PropertiService {
     @GET("bacaproperti.php")
     suspend fun getAllProperti(): List<Properti>
 
-    @GET("baca1properti.php/{id_properti}")
-    suspend fun getPropertiById(@Query("id_properti") id_properti: String): Properti
+    @GET("baca1properti.php/{idProperti}")
+    suspend fun getPropertiById(@Query("idProperti") idProperti: String): Properti
 
-    @PUT("editproperti.php/{id_properti}")
-    suspend fun updateProperti(@Query("id_properti") id_properti: String, @Body properti: Properti)
+    @PUT("editproperti.php/{idProperti}")
+    suspend fun updateProperti(@Query("idProperti") idProperti: String, @Body properti: Properti)
 
-    @DELETE("deleteproperti.php/{id_properti}")
-    suspend fun deleteProperti(@Query("id_properti") id_properti: String): Response<Void>
+    @DELETE("deleteproperti.php/{idProperti}")
+    suspend fun deleteProperti(@Query("idProperti") idProperti: String): Response<Void>
 }

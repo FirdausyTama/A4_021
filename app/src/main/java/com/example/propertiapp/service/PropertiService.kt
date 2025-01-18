@@ -31,6 +31,7 @@ interface PropertiService {
     @PUT("editproperti.php/{idProperti}")
     suspend fun updateProperti(@Query("idProperti") idProperti: String, @Body properti: Properti)
 
-    @DELETE("deleteproperti.php/{idProperti}")
-    suspend fun deleteProperti(@Query("idProperti") idProperti: String): Response<Void>
+    @DELETE("deleteproperti.php")
+    suspend fun deleteProperti(@Query("id_properti") idProperti: String): Response<Void>
+
 }

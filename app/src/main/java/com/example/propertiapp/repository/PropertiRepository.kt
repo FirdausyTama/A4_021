@@ -27,13 +27,13 @@ class NetworkPropertiRepository(
         try {
             val response = propertiApiService.deleteProperti(idProperti)
             if (!response.isSuccessful) {
-                throw IOException("Failed to delete properti. HTTP Status code: " +
-                        "${response.code()}")
+                throw IOException("Failed to delete properti. HTTP Status Code: ${response.code()}")
             } else {
-                response.message()
-                println(response.message())
+                // Delete berhasil
+                println("Delete successful with message: ${response.message()}")
             }
         } catch (e: Exception) {
+            println("Delete failed with error: ${e.message}")
             throw e
         }
     }

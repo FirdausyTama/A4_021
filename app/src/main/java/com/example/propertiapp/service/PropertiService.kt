@@ -25,8 +25,8 @@ interface PropertiService {
     @GET("bacaproperti.php")
     suspend fun getAllProperti(): List<Properti>
 
-    @GET("baca1properti.php/{idProperti}")
-    suspend fun getPropertiById(@Query("idProperti") idProperti: String): Properti
+    @GET("baca1properti.php")
+    suspend fun getPropertiById(@Query("id_properti") idProperti: String): Properti
 
     @PUT("editproperti.php/{idProperti}")
     suspend fun updateProperti(@Query("idProperti") idProperti: String, @Body properti: Properti)

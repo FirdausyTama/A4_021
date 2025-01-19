@@ -2,6 +2,8 @@ package com.example.propertiapp.di
 
 import com.example.propertiapp.repository.PropertiRepository
 import com.example.propertiapp.repository.NetworkPropertiRepository
+import com.example.propertiapp.repository.JenisRepository
+import com.example.propertiapp.repository.NetworkJenisRepository
 import com.example.propertiapp.service.PropertiService
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
@@ -10,6 +12,7 @@ import retrofit2.Retrofit
 
 interface AppContainer {
     val propertiRepository: PropertiRepository
+    val jenisRepository: JenisRepository
 }
 
 class PropertiContainer : AppContainer {
@@ -27,5 +30,9 @@ class PropertiContainer : AppContainer {
 
     override val propertiRepository: PropertiRepository by lazy {
         NetworkPropertiRepository(propertiService)
+    }
+
+    override val jenisRepository: JenisRepository by lazy {
+        NetworkJenisRepository(propertiService)
     }
 }

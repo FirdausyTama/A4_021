@@ -1,6 +1,7 @@
 package com.example.propertiapp.service
 
 import com.example.propertiapp.model.Properti
+import com.example.propertiapp.model.Jenis
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -19,6 +20,7 @@ interface PropertiService {
         "Content-Type: application/json",
     )
 
+    // Properti endpoints
     @POST("insertproperti.php")
     suspend fun insertProperti(@Body properti: Properti)
 
@@ -34,4 +36,19 @@ interface PropertiService {
     @DELETE("deleteproperti.php")
     suspend fun deleteProperti(@Query("id_properti") idProperti: String): Response<Void>
 
+    // Jenis endpoints
+    @POST("insertjenis.php")
+    suspend fun insertJenis(@Body jenis: Jenis)
+
+    @GET("bacajenis.php")
+    suspend fun getAllJenis(): List<Jenis>
+
+    @GET("baca1jenis.php")
+    suspend fun getJenisById(@Query("id_jenis") idJenis: String): Jenis
+
+    @PUT("editjenis.php/{idJenis}")
+    suspend fun updateJenis(@Query("idJenis") idJenis: String, @Body jenis: Jenis)
+
+    @DELETE("deletejenis.php")
+    suspend fun deleteJenis(@Query("id_jenis") idJenis: String): Response<Void>
 }

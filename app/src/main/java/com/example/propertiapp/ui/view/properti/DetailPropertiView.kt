@@ -201,7 +201,6 @@ fun DetailPropertiCard(properti: Properti) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Rent Now Button
             Button(
                 onClick = { },
                 modifier = Modifier
@@ -209,7 +208,7 @@ fun DetailPropertiCard(properti: Properti) {
                     .height(48.dp),
                 shape = MaterialTheme.shapes.medium
             ) {
-                Text("Rent Now")
+                Text("Jenis Lainya")
             }
         }
     }

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.propertiapp.PropertiApplication
+import com.example.propertiapp.ui.viewmodel.jenisproperti.InsertJenisViewModel
 import com.example.propertiapp.ui.viewmodel.jenisproperti.JenisViewModel
 import com.example.propertiapp.ui.viewmodel.properti.DetailPropertiViewModel
 import com.example.propertiapp.ui.viewmodel.properti.HomeViewModel
@@ -16,6 +17,7 @@ object PenyediaViewModel {
         initializer { InsertViewModel(aplikasiProperti().container.propertiRepository) }
         initializer { DetailPropertiViewModel(aplikasiProperti().container.propertiRepository) }
         initializer { JenisViewModel(aplikasiProperti().container.jenisRepository) }
+        initializer { InsertJenisViewModel(aplikasiProperti().container.jenisRepository) }
     }
 }
 

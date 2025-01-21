@@ -2,6 +2,7 @@ package com.example.propertiapp.ui.view.properti
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -18,14 +19,19 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.propertiapp.model.StatusPropertiMenu
 import com.example.propertiapp.navigasi.DestinasiNavigasi
 import com.example.propertiapp.ui.costumewidget.CostumeTopAppBar
+import com.example.propertiapp.ui.costumewidget.DynamicSelectedTextField
 import com.example.propertiapp.ui.viewmodel.properti.InsertUiEvent
 import com.example.propertiapp.ui.viewmodel.properti.InsertViewModel
 import com.example.propertiapp.ui.viewmodel.PenyediaViewModel
@@ -47,6 +53,15 @@ fun EntryPropertiScreen(
     val uiState = viewModel.uiState
     val coroutineScope = rememberCoroutineScope()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+
+    var chosenDropdown by remember {
+        mutableStateOf(
+            ""
+        )
+    }
+    var checked by remember { mutableStateOf(false) }
+    var listData: MutableList<String> = mutableListOf(chosenDropdown)
+
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -167,44 +182,54 @@ fun FormInput(
             singleLine = true
         )
 
-        OutlinedTextField(
-            value = insertUiEvent.statusProperti,
-            onValueChange = { onValueChange(insertUiEvent.copy(statusProperti = it)) },
-            label = { Text("Status Properti") },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = enabled,
-            placeholder = { Text("Masukkan Status Properti") },
-            singleLine = true
+        DynamicSelectedTextField(
+            selectedValue = insertUiEvent.statusProperti,
+            options = StatusPropertiMenu.options,
+            label = "Status",
+            onValueChangedEvent = { spesialis ->
+                onValueChange(insertUiEvent.copy(statusProperti = spesialis))
+            },
+            modifier = Modifier.fillMaxWidth()
         )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            OutlinedTextField(
+                value = insertUiEvent.idJenis,
+                onValueChange = { onValueChange(insertUiEvent.copy(idJenis = it)) },
+                label = { Text("ID Jenis") },
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth(),
+                enabled = enabled,
+                placeholder = { Text("Masukkan ID Jenis") },
+                singleLine = true
+            )
 
-        OutlinedTextField(
-            value = insertUiEvent.idJenis,
-            onValueChange = { onValueChange(insertUiEvent.copy(idJenis = it)) },
-            label = { Text("ID Jenis") },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = enabled,
-            placeholder = { Text("Masukkan ID Jenis") },
-            singleLine = true
-        )
+            OutlinedTextField(
+                value = insertUiEvent.idPemilik,
+                onValueChange = { onValueChange(insertUiEvent.copy(idPemilik = it)) },
+                label = { Text("ID Pemilik") },
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth(),
+                enabled = enabled,
+                placeholder = { Text("Masukkan ID Pemilik") },
+                singleLine = true
+            )
 
-        OutlinedTextField(
-            value = insertUiEvent.idPemilik,
-            onValueChange = { onValueChange(insertUiEvent.copy(idPemilik = it)) },
-            label = { Text("ID Pemilik") },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = enabled,
-            placeholder = { Text("Masukkan ID Pemilik") },
-            singleLine = true
-        )
-
-        OutlinedTextField(
-            value = insertUiEvent.idManajer,
-            onValueChange = { onValueChange(insertUiEvent.copy(idManajer = it)) },
-            label = { Text("ID Manajer") },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = enabled,
-            placeholder = { Text("Masukkan ID Manajer") },
-            singleLine = true
-        )
+            OutlinedTextField(
+                value = insertUiEvent.idManajer,
+                onValueChange = { onValueChange(insertUiEvent.copy(idManajer = it)) },
+                label = { Text("ID Manajer") },
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth(),
+                enabled = enabled,
+                placeholder = { Text("Masukkan ID Manajer") },
+                singleLine = true
+            )
+        }
     }
 }

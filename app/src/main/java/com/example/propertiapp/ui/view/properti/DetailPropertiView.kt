@@ -46,8 +46,8 @@ object DestinasiDetailProperti : DestinasiNavigasi {
 fun DetailPropertiScreen(
     idProperti: String,
     onNavigateBack: () -> Unit,
-    onEditClick: () -> Unit,
-    navigateToJenis: () -> Unit, // Tambahkan parameter ini
+    onEditClick: (String) -> Unit, // Tambahkan parameter idProperti
+    navigateToJenis: () -> Unit,
     viewModel: DetailPropertiViewModel = viewModel(factory = PenyediaViewModel.Factory),
     modifier: Modifier = Modifier
 ) {
@@ -71,7 +71,7 @@ fun DetailPropertiScreen(
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = onEditClick,
+                onClick = { onEditClick(idProperti) }, // Navigasi ke Update Properti
                 shape = MaterialTheme.shapes.medium,
                 modifier = Modifier.padding(18.dp)
             ) {
@@ -95,7 +95,7 @@ fun DetailPropertiScreen(
                 ) {
                     DetailPropertiCard(
                         properti = state.properti,
-                        onJenisClick = navigateToJenis // Teruskan navigasi ke DetailPropertiCard
+                        onJenisClick = navigateToJenis
                     )
                     Spacer(modifier = Modifier.weight(1f))
                 }
@@ -106,6 +106,7 @@ fun DetailPropertiScreen(
         }
     }
 }
+
 
 @Composable
 fun DetailPropertiCard(

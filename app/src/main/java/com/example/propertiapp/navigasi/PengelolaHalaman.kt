@@ -22,16 +22,19 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
         startDestination = DestinasiHome.route,
         modifier = Modifier,
     ) {
-        // Properti Screens
+        // Properti Home
         composable(DestinasiHome.route) {
             HomeScreen(
                 navigateToItemEntry = { navController.navigate(DestinasiEntry.route) },
-                navigateToJenis = { navController.navigate(DestinasiJenis.route) }, // Add this
+                navigateToJenis = { navController.navigate(DestinasiJenis.route) },
+                navigateToPemilik = {}, // Tambahkan navigasi ke Settings
+                navigateToManajer = {}, // Tambahkan navigasi ke About
                 onDetailClick = { idProperti ->
                     navController.navigate("${DestinasiDetailProperti.route}/$idProperti")
                 }
             )
         }
+
 
         composable(DestinasiEntry.route) {
             EntryPropertiScreen(
@@ -39,6 +42,8 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
             )
         }
 
+
+        // Detail properti
         composable(
             route = "${DestinasiDetailProperti.route}/{idProperti}",
             arguments = listOf(navArgument("idProperti") { type = NavType.StringType })
@@ -48,25 +53,37 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
                 idProperti = idProperti,
                 onNavigateBack = { navController.navigateUp() },
                 onEditClick = {
-                    navController.navigate("${DestinasiEntry.route}?idProperti=$idProperti")
+                    navController.navigate("${DestinasiEditProperti.route}/$idProperti")
                 },
                 navigateToJenis = { navController.navigate(DestinasiJenis.route) }
+            )
+        }
+
+        // Navigasi untuk Update Properti
+        composable(
+            route = "${DestinasiEditProperti.route}/{idProperti}",
+            arguments = listOf(navArgument("idProperti") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val idProperti = backStackEntry.arguments?.getString("idProperti") ?: ""
+            EditPropertiScreen(
+                idProperti = idProperti,
+                navigateBack = { navController.navigateUp() },
+                onNavigateBack = { navController.navigateUp() }
             )
         }
 
         // Jenis Screens
         composable(DestinasiJenis.route) {
             JenisScreen(
-                navigateToItemEntry = { navController.navigate(DestinasiEntryJenis.route)},
+                navigateToItemEntry = { navController.navigate(DestinasiEntryJenis.route) },
                 onDetailClick = { idJenis ->
                     navController.navigate("${DestinasiDetailJenis.route}/$idJenis")
                 },
-                navigateBack = {navController.navigate(DestinasiHome.route)}
-
+                navigateBack = { navController.navigate(DestinasiHome.route) }
             )
         }
 
-       composable(DestinasiEntryJenis.route) {
+        composable(DestinasiEntryJenis.route) {
             EntryJenisScreen(
                 navigateBack = { navController.navigate(DestinasiJenis.route) }
             )
@@ -80,8 +97,8 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
             DetailJenisScreen(
                 idJenis = idJenis,
                 onNavigateBack = { navController.navigateUp() },
-                onEditClick = {
-                    navController.navigate("${DestinasiEntryJenis.route}?idJenis=$idJenis")
+                onEditClick = {/*
+                    navController.navigate("${DestinasiUpdateProperti.route}/$idJenis")*/
                 }
             )
         }

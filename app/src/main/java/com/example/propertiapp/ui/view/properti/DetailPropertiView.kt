@@ -47,6 +47,7 @@ fun DetailPropertiScreen(
     idProperti: String,
     onNavigateBack: () -> Unit,
     onEditClick: () -> Unit,
+    navigateToJenis: () -> Unit, // Tambahkan parameter ini
     viewModel: DetailPropertiViewModel = viewModel(factory = PenyediaViewModel.Factory),
     modifier: Modifier = Modifier
 ) {
@@ -92,7 +93,10 @@ fun DetailPropertiScreen(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    DetailPropertiCard(properti = state.properti)
+                    DetailPropertiCard(
+                        properti = state.properti,
+                        onJenisClick = navigateToJenis // Teruskan navigasi ke DetailPropertiCard
+                    )
                     Spacer(modifier = Modifier.weight(1f))
                 }
             }
@@ -104,7 +108,10 @@ fun DetailPropertiScreen(
 }
 
 @Composable
-fun DetailPropertiCard(properti: Properti) {
+fun DetailPropertiCard(
+    properti: Properti,
+    onJenisClick: () -> Unit
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -202,7 +209,7 @@ fun DetailPropertiCard(properti: Properti) {
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(
-                onClick = { },
+                onClick = onJenisClick,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),

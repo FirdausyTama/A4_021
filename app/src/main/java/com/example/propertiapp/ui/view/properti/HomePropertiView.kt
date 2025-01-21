@@ -5,14 +5,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
@@ -35,6 +33,9 @@ object DestinasiHome : DestinasiNavigasi {
 @Composable
 fun HomeScreen(
     navigateToItemEntry: () -> Unit,
+    navigateToJenis: () -> Unit,
+    navigateToPemilik: () -> Unit, // Navigasi ke pengaturan
+    navigateToManajer: () -> Unit, // Navigasi ke tentang
     modifier: Modifier = Modifier,
     onDetailClick: (String) -> Unit = {},
     viewModel: HomeViewModel = viewModel(factory = PenyediaViewModel.Factory)
@@ -52,29 +53,101 @@ fun HomeScreen(
                 ),
                 scrollBehavior = scrollBehavior,
                 actions = {
-                    // Refresh Button
-                    IconButton(onClick = { viewModel.getProperti() }) {
-                        Icon(
-                            imageVector = Icons.Default.Refresh,
-                            contentDescription = "Refresh",
-                            tint = MaterialTheme.colorScheme.onPrimary
-                        )
-                    }
-                    // Profile Icon
-                    IconButton(onClick = { }) {
-                        Icon(
-                            imageVector = Icons.Default.Person,
-                            contentDescription = "Profile",
-                            tint = MaterialTheme.colorScheme.onPrimary
-                        )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        // Refresh
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier.clickable { viewModel.getProperti() }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Refresh,
+                                contentDescription = "Refresh",
+                                tint = MaterialTheme.colorScheme.onPrimary
+                            )
+                            Text(
+                                text = "Refresh",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onPrimary
+                            )
+                        }
+                        // Tambah Properti
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier.clickable { /*navigateToItemEntry()*/ }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Home,
+                                contentDescription = "Home Properti",
+                                tint = MaterialTheme.colorScheme.onPrimary
+                            )
+                            Text(
+                                text = "Home",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onPrimary
+                            )
+                        }
+                        // Jenis Properti
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier.clickable { navigateToJenis() }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.AddCircle,
+                                contentDescription = "Jenis Properti",
+                                tint = MaterialTheme.colorScheme.onPrimary
+                            )
+                            Text(
+                                text = "Jenis",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onPrimary
+                            )
+                        }
+                        // Pengaturan
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier.clickable { navigateToPemilik() }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Person,
+                                contentDescription = "Halaman Pemilik",
+                                tint = MaterialTheme.colorScheme.onPrimary
+                            )
+                            Text(
+                                text = "Pemilik",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onPrimary
+                            )
+                        }
+                        // Tentang
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier.clickable { navigateToManajer() }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.AccountBox,
+                                contentDescription = "Halaman Manajer",
+                                tint = MaterialTheme.colorScheme.onPrimary
+                            )
+                            Text(
+                                text = "Manajer",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onPrimary
+                            )
+                        }
                     }
                 }
             )
         }
     ) { innerPadding ->
         HomeContent(
-            modifier = Modifier.padding(innerPadding),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding),
             onAddClick = navigateToItemEntry,
+            onJenisClick = navigateToJenis,
             homeUiState = viewModel.propertiUiState,
             retryAction = { viewModel.getProperti() },
             onDetailClick = onDetailClick,
@@ -90,110 +163,117 @@ fun HomeScreen(
 fun HomeContent(
     modifier: Modifier = Modifier,
     onAddClick: () -> Unit = {},
+    onJenisClick: () -> Unit = {}, // Add this parameter
     homeUiState: HomeUiState,
     retryAction: () -> Unit,
     onDetailClick: (String) -> Unit,
     onDeleteClick: (Properti) -> Unit
 ) {
-    Column(modifier = modifier) {
-        // Properti Card Header
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surface
-            )
+    Box(modifier = modifier) {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(bottom = 16.dp)
         ) {
-            Column(
-                modifier = Modifier.padding(16.dp)
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.logo), // Ganti dengan ikon dokter Anda
-                        contentDescription = "",
-                        modifier = Modifier.size(100.dp),
-                        tint = Color(0xFF1976D2)
+            item {
+                // Header Card
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surface
                     )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = "Manajemen Properti",
-                        style = MaterialTheme.typography.titleLarge
-                    )
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.logo),
+                                contentDescription = "",
+                                modifier = Modifier.size(100.dp),
+                                tint = Color(0xFF3700B3)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Column {
+                                Text(
+                                    text = "Manajemen Properti",
+                                    style = MaterialTheme.typography.titleLarge
+                                )
+                                Text(
+                                    text = "Cari properti yang sesuai dengan anda",
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                            }
+                        }
+                    }
                 }
-                Text(
-                    text = "Cari properti yang sesuai dengan anda",
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.padding(top = 4.dp)
-                )
             }
-        }
 
-        // Search Bar
-        OutlinedTextField(
-            value = "",
-            onValueChange = {},
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            placeholder = { Text("Cari properti") },
-            leadingIcon = {
-                Icon(Icons.Default.Search, contentDescription = null)
+            item {
+                // Action Buttons
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    Button(
+                        onClick = onAddClick,
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text("+ Tambah Properti")
+                    }
+                }
+                Spacer(modifier = Modifier.height(10.dp))
             }
-        )
 
-        // Action Buttons
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            Button(
-                onClick = onAddClick,
-                modifier = Modifier.weight(1f)
-            ) {
-                Text("Tambah Properti")
-            }
-            Button(
-                onClick = { },
-                modifier = Modifier.weight(1f)
-            ) {
-                Text("Fitur Lain")
-            }
-        }
 
-        // Properti List Status
-        when (homeUiState) {
-            is HomeUiState.Loading -> OnLoading(modifier = Modifier.fillMaxSize())
-            is HomeUiState.Success -> PropertiList(
-                propertiList = homeUiState.properti,
-                onDetailClick = { onDetailClick(it.idProperti) },
-                onDeleteClick = onDeleteClick
-            )
-            is HomeUiState.Error -> OnError(retryAction, modifier = Modifier.fillMaxSize())
+            // Content Area
+            when (homeUiState) {
+                is HomeUiState.Loading -> {
+                    item { OnLoading(modifier = Modifier.fillParentMaxSize()) }
+                }
+                is HomeUiState.Success -> {
+                    items(homeUiState.properti) { properti ->
+                        PropertiCard(
+                            properti = properti,
+                            onClick = { onDetailClick(properti.idProperti) },
+                            onDeleteClick = { onDeleteClick(properti) },
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
+                }
+                is HomeUiState.Error -> {
+                    item { OnError(retryAction, modifier = Modifier.fillParentMaxSize()) }
+                }
+            }
         }
     }
 }
 
 @Composable
-fun OnLoading(modifier: Modifier = Modifier){
-    Image(
-        modifier = modifier.size(200.dp),
-        painter = painterResource(R.drawable.loading),
-        contentDescription = stringResource(R.string.loading)
-    )
+fun OnLoading(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier,
+        contentAlignment = Alignment.Center
+    ) {
+        Image(
+            modifier = Modifier.size(200.dp),
+            painter = painterResource(R.drawable.loading),
+            contentDescription = stringResource(R.string.loading)
+        )
+    }
 }
 
 @Composable
-fun OnError(retryAction: () -> Unit, modifier: Modifier = Modifier){
-    Column (
+fun OnError(retryAction: () -> Unit, modifier: Modifier = Modifier) {
+    Column(
         modifier = modifier,
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
-    ){
+    ) {
         Image(
-            painter = painterResource(id = R.drawable.error), contentDescription = ""
+            painter = painterResource(id = R.drawable.error),
+            contentDescription = ""
         )
         Text(text = stringResource(R.string.loading_failed), modifier = Modifier.padding(16.dp))
         Button(onClick = retryAction) {
@@ -209,8 +289,7 @@ fun PropertiList(
     onDeleteClick: (Properti) -> Unit
 ) {
     LazyColumn(
-        modifier = Modifier.fillMaxWidth(),
-        contentPadding = PaddingValues(16.dp),
+        contentPadding = PaddingValues(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(propertiList) { properti ->
@@ -250,22 +329,24 @@ fun PropertiCard(
                     style = MaterialTheme.typography.titleLarge,
                 )
                 Spacer(Modifier.weight(1f))
+                IconButton(onClick = {}) {
+                    Icon(
+                        imageVector = Icons.Default.Info,
+                        contentDescription = "Info"
+                    )
+                }
                 IconButton(onClick = onDeleteClick) {
                     Icon(
                         imageVector = Icons.Default.Delete,
-                        contentDescription = null
+                        contentDescription = "Delete"
                     )
                 }
-                Text(
-                    text = properti.idProperti,
-                    style = MaterialTheme.typography.titleMedium
-                )
             }
 
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     imageVector = Icons.Default.Home,
-                    contentDescription = null,
+                    contentDescription = "Description",
                     modifier = Modifier.size(16.dp)
                 )
                 Spacer(modifier = Modifier.width(4.dp))
@@ -278,7 +359,7 @@ fun PropertiCard(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     imageVector = Icons.Default.LocationOn,
-                    contentDescription = null,
+                    contentDescription = "Location",
                     modifier = Modifier.size(16.dp)
                 )
                 Spacer(modifier = Modifier.width(4.dp))
@@ -289,13 +370,26 @@ fun PropertiCard(
                 Spacer(modifier = Modifier.width(16.dp))
                 Icon(
                     imageVector = Icons.Default.ShoppingCart,
-                    contentDescription = null,
+                    contentDescription = "Price",
                     modifier = Modifier.size(16.dp)
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
-                    text = properti.harga,
+                    text = "Rp ${properti.harga}",
                     style = MaterialTheme.typography.bodySmall
+                )
+            }
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    imageVector = Icons.Default.Warning,
+                    contentDescription = "Status",
+                    modifier = Modifier.size(16.dp)
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(
+                    text = properti.statusProperti,
+                    style = MaterialTheme.typography.bodyMedium
                 )
             }
         }

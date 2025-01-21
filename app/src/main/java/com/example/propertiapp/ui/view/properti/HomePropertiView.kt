@@ -57,22 +57,7 @@ fun HomeScreen(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
-                        // Refresh
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.clickable { viewModel.getProperti() }
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Refresh,
-                                contentDescription = "Refresh",
-                                tint = MaterialTheme.colorScheme.onPrimary
-                            )
-                            Text(
-                                text = "Refresh",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onPrimary
-                            )
-                        }
+
                         // Tambah Properti
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
@@ -111,7 +96,7 @@ fun HomeScreen(
                             modifier = Modifier.clickable { navigateToPemilik() }
                         ) {
                             Icon(
-                                imageVector = Icons.Default.Person,
+                                imageVector = Icons.Default.Face,
                                 contentDescription = "Halaman Pemilik",
                                 tint = MaterialTheme.colorScheme.onPrimary
                             )
@@ -133,6 +118,22 @@ fun HomeScreen(
                             )
                             Text(
                                 text = "Manajer",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onPrimary
+                            )
+                        }
+                        // Refresh
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier.clickable { viewModel.getProperti() }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Refresh,
+                                contentDescription = "Refresh",
+                                tint = MaterialTheme.colorScheme.onPrimary
+                            )
+                            Text(
+                                text = "Refresh",
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onPrimary
                             )
@@ -345,7 +346,7 @@ fun PropertiCard(
 
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
-                    imageVector = Icons.Default.Home,
+                    imageVector = Icons.Default.Info,
                     contentDescription = "Description",
                     modifier = Modifier.size(16.dp)
                 )

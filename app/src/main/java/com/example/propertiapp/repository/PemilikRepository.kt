@@ -3,7 +3,6 @@ package com.example.propertiapp.repository
 
 import com.example.propertiapp.model.Pemilik
 import com.example.propertiapp.service.PemilikService
-import com.example.propertiapp.service.PropertiService
 import okio.IOException
 
 interface PemilikRepository {

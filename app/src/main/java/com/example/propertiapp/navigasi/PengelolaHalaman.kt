@@ -16,8 +16,10 @@ import com.example.propertiapp.ui.view.jenisproperti.DestinasiDetailJenis
 import com.example.propertiapp.ui.view.jenisproperti.DestinasiEntryJenis
 import com.example.propertiapp.ui.view.jenisproperti.DetailJenisScreen
 import com.example.propertiapp.ui.view.jenisproperti.EntryJenisScreen
+import com.example.propertiapp.ui.view.pemilik.DestinasiDetailPemilik
 import com.example.propertiapp.ui.view.pemilik.DestinasiEntryPemilik
 import com.example.propertiapp.ui.view.pemilik.DestinasiPemilik
+import com.example.propertiapp.ui.view.pemilik.DetailPemilikScreen
 import com.example.propertiapp.ui.view.pemilik.InsertPemilikView
 import com.example.propertiapp.ui.view.pemilik.PemilikScreen
 
@@ -56,8 +58,8 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
             PemilikScreen(
                 navigateToItemEntry = { navController.navigate(DestinasiEntryPemilik.route) },
                 navigateBack = { navController.navigateUp() },
-                onDetailClick = { /*idPemilik ->
-                    navController.navigate("${DestinasiDetailPemilik.route}/$idPemilik")*/
+                onDetailClick = { idPemilik ->
+                    navController.navigate("${DestinasiDetailPemilik.route}/$idPemilik")
                 }
             )
         }
@@ -134,6 +136,20 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
             val idJenis = backStackEntry.arguments?.getString("idJenis") ?: ""
             DetailJenisScreen(
                 idJenis = idJenis,
+                onNavigateBack = { navController.navigateUp() },
+                onEditClick = {/*
+                    navController.navigate("${DestinasiUpdateProperti.route}/$idJenis")*/
+                }
+            )
+        }
+
+        composable(
+            route = "${DestinasiDetailPemilik.route}/{idPemilik}",
+            arguments = listOf(navArgument("idPemilik") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val idPemilik = backStackEntry.arguments?.getString("idPemilik") ?: ""
+            DetailPemilikScreen(
+                idPemilik = idPemilik,
                 onNavigateBack = { navController.navigateUp() },
                 onEditClick = {/*
                     navController.navigate("${DestinasiUpdateProperti.route}/$idJenis")*/

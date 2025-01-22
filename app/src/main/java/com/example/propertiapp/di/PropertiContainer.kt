@@ -3,9 +3,12 @@ package com.example.propertiapp.di
 import com.example.propertiapp.repository.PropertiRepository
 import com.example.propertiapp.repository.NetworkPropertiRepository
 import com.example.propertiapp.repository.JenisRepository
+import com.example.propertiapp.repository.ManajerRepository
 import com.example.propertiapp.repository.NetworkJenisRepository
+import com.example.propertiapp.repository.NetworkManajerRepository
 import com.example.propertiapp.repository.PemilikRepository
 import com.example.propertiapp.repository.NetworkPemilikRepository
+import com.example.propertiapp.service.ManajerService
 import com.example.propertiapp.service.PemilikService
 import com.example.propertiapp.service.PropertiService
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
@@ -17,6 +20,7 @@ interface AppContainer {
     val propertiRepository: PropertiRepository
     val jenisRepository: JenisRepository
     val pemilikRepository: PemilikRepository
+    val manajerRepository: ManajerRepository
 }
 
 class PropertiContainer : AppContainer {
@@ -35,6 +39,10 @@ class PropertiContainer : AppContainer {
         retrofit.create(PemilikService::class.java)
     }
 
+    private val manajerService: ManajerService by lazy {
+        retrofit.create(ManajerService::class.java)
+    }
+
     override val propertiRepository: PropertiRepository by lazy {
         NetworkPropertiRepository(propertiService)
     }
@@ -45,5 +53,9 @@ class PropertiContainer : AppContainer {
 
     override val pemilikRepository: PemilikRepository by lazy {
         NetworkPemilikRepository(pemilikService)
+    }
+
+    override val manajerRepository: ManajerRepository by lazy {
+        NetworkManajerRepository(manajerService)
     }
 }

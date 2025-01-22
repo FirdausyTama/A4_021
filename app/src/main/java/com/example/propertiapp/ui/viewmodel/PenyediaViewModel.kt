@@ -8,7 +8,9 @@ import com.example.propertiapp.PropertiApplication
 import com.example.propertiapp.ui.viewmodel.jenisproperti.DetailJenisViewModel
 import com.example.propertiapp.ui.viewmodel.jenisproperti.InsertJenisViewModel
 import com.example.propertiapp.ui.viewmodel.jenisproperti.JenisViewModel
+import com.example.propertiapp.ui.viewmodel.manajer.DetailManajerVM
 import com.example.propertiapp.ui.viewmodel.manajer.HomeManajerVM
+import com.example.propertiapp.ui.viewmodel.manajer.InsertManajerVM
 import com.example.propertiapp.ui.viewmodel.pemilik.DetailPemilikViewModel
 import com.example.propertiapp.ui.viewmodel.pemilik.HomePemilikVM
 import com.example.propertiapp.ui.viewmodel.pemilik.InsertPemilikViewModel
@@ -36,6 +38,8 @@ object PenyediaViewModel {
 
         //Manajer
         initializer { HomeManajerVM(aplikasiProperti().container.manajerRepository) }
+        initializer { InsertManajerVM(aplikasiProperti().container.manajerRepository) }
+        initializer { DetailManajerVM(aplikasiProperti().container.manajerRepository) }
     }
 }
 

@@ -1,24 +1,9 @@
 package com.example.propertiapp.ui.view.properti
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.Divider
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.input.KeyboardType
@@ -27,32 +12,26 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.propertiapp.navigasi.DestinasiNavigasi
 import com.example.propertiapp.ui.costumewidget.CostumeTopAppBar
 import com.example.propertiapp.ui.viewmodel.PenyediaViewModel
-import com.example.propertiapp.ui.viewmodel.properti.UpdatePropertiUiEvent
-import com.example.propertiapp.ui.viewmodel.properti.UpdatePropertiUiState
-import com.example.propertiapp.ui.viewmodel.properti.UpdatePropertiViewModel
-import kotlinx.coroutines.launch
+import com.example.propertiapp.ui.viewmodel.properti.*
 
 object DestinasiEditProperti : DestinasiNavigasi {
-    override val route = "properti_edit"
-    override val titleRes = "Edit Properti"
+    override val route = "properti_update"
+    override val titleRes = "Update Properti"
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditPropertiScreen(
-    navigateBack: () -> Unit,
+    idProperti: String,
     onNavigateBack: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: UpdatePropertiViewModel = viewModel(factory = PenyediaViewModel.Factory),
-    idProperti: String
+    viewModel: UpdatePropertiVM = viewModel(factory = PenyediaViewModel.Factory)
 ) {
-    val coroutineScope = rememberCoroutineScope()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    val uiState by viewModel.uiState.collectAsState()
 
-    LaunchedEffect(key1 = true) {
-        coroutineScope.launch {
-            viewModel.getPropertiById(idProperti)
-        }
+    LaunchedEffect(idProperti) {
+        viewModel.loadPropertiData(idProperti)
     }
 
     Scaffold(
@@ -62,134 +41,165 @@ fun EditPropertiScreen(
                 title = DestinasiEditProperti.titleRes,
                 canNavigateBack = true,
                 scrollBehavior = scrollBehavior,
-                navigateUp = navigateBack
+                navigateUp = onNavigateBack
             )
         }
     ) { innerPadding ->
-        EditPropertiBody(
-            updateUiState = viewModel.uiState,
-            onPropertiValueChange = viewModel::updateUiState,
-            onSaveClick = {
-                coroutineScope.launch {
-                    viewModel.updateProperti(idProperti)
-                    onNavigateBack()
-                }
-            },
+        Column(
             modifier = Modifier
+                .fillMaxSize()
                 .padding(innerPadding)
-                .verticalScroll(rememberScrollState())
-                .fillMaxWidth()
-        )
-    }
-}
-
-@Composable
-fun EditPropertiBody(
-    updateUiState: UpdatePropertiUiState,
-    onPropertiValueChange: (UpdatePropertiUiEvent) -> Unit,
-    onSaveClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        verticalArrangement = Arrangement.spacedBy(18.dp),
-        modifier = modifier.padding(12.dp)
-    ) {
-        FormInputPropertiEdit(
-            updateUiEvent = updateUiState.updateUiEvent,
-            onValueChange = onPropertiValueChange,
-            modifier = Modifier.fillMaxWidth()
-        )
-        Button(
-            onClick = onSaveClick,
-            shape = MaterialTheme.shapes.small,
-            modifier = Modifier.fillMaxWidth()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text(text = "Simpan Perubahan")
+            when (uiState) {
+                is UpdateUiState.Loading -> CircularProgressIndicator()
+                is UpdateUiState.Success -> {
+                    val properti = (uiState as UpdateUiState.Success).properti
+                    UpdateForm(
+                        idProperti = properti.idProperti,
+                        namaProperti = properti.namaProperti,
+                        deskripsiProperti = properti.deskripsiProperti,
+                        lokasi = properti.lokasi,
+                        harga = properti.harga,
+                        statusProperti = properti.statusProperti,
+                        idJenis = properti.idJenis,
+                        idPemilik = properti.idPemilik,
+                        idManajer = properti.idManajer,
+                        onUpdateClick = {
+                            viewModel.updateUiState(it)
+                            viewModel.updateProperti()
+                            onNavigateBack()
+                        }
+                    )
+                }
+                is UpdateUiState.Error -> {
+                    Text("Error: ${(uiState as UpdateUiState.Error).message}")
+                }
+                else -> {}
+            }
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FormInputPropertiEdit(
-    updateUiEvent: UpdatePropertiUiEvent,
-    modifier: Modifier = Modifier,
-    onValueChange: (UpdatePropertiUiEvent) -> Unit = {},
-    enabled: Boolean = true
+fun UpdateForm(
+    idProperti: String,
+    namaProperti: String,
+    deskripsiProperti: String,
+    lokasi: String,
+    harga: String,
+    statusProperti: String,
+    idJenis: String,
+    idPemilik: String,
+    idManajer: String,
+    onUpdateClick: (UpdateUiEvent) -> Unit,
+    modifier: Modifier = Modifier
 ) {
+    var idProperti by remember { mutableStateOf(idProperti) }
+    var namaProperti by remember { mutableStateOf(namaProperti) }
+    var deskripsiProperti by remember { mutableStateOf(deskripsiProperti) }
+    var lokasi by remember { mutableStateOf(lokasi) }
+    var harga by remember { mutableStateOf(harga) }
+    var statusProperti by remember { mutableStateOf(statusProperti) }
+    var idJenis by remember { mutableStateOf(idJenis) }
+    var idPemilik by remember { mutableStateOf(idPemilik) }
+    var idManajer by remember { mutableStateOf(idManajer) }
+
     Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         OutlinedTextField(
-            value = updateUiEvent.namaProperti,
-            onValueChange = { onValueChange(updateUiEvent.copy(namaProperti = it)) },
+            value = namaProperti,
+            onValueChange = { namaProperti = it },
             label = { Text("Nama Properti") },
             modifier = Modifier.fillMaxWidth(),
-            enabled = enabled,
             singleLine = true
         )
+
         OutlinedTextField(
-            value = updateUiEvent.deskripsiProperti,
-            onValueChange = { onValueChange(updateUiEvent.copy(deskripsiProperti = it)) },
+            value = deskripsiProperti,
+            onValueChange = { deskripsiProperti = it },
             label = { Text("Deskripsi Properti") },
             modifier = Modifier.fillMaxWidth(),
-            enabled = enabled,
             singleLine = true
         )
+
         OutlinedTextField(
-            value = updateUiEvent.lokasi,
-            onValueChange = { onValueChange(updateUiEvent.copy(lokasi = it)) },
+            value = lokasi,
+            onValueChange = { lokasi = it },
             label = { Text("Lokasi") },
             modifier = Modifier.fillMaxWidth(),
-            enabled = enabled,
             singleLine = true
         )
+
         OutlinedTextField(
-            value = updateUiEvent.harga,
-            onValueChange = { onValueChange(updateUiEvent.copy(harga = it)) },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            value = harga,
+            onValueChange = { harga = it },
             label = { Text("Harga") },
             modifier = Modifier.fillMaxWidth(),
-            enabled = enabled,
-            singleLine = true
+            singleLine = true,
         )
+
         OutlinedTextField(
-            value = updateUiEvent.statusProperti,
-            onValueChange = { onValueChange(updateUiEvent.copy(statusProperti = it)) },
+            value = statusProperti,
+            onValueChange = { statusProperti = it },
             label = { Text("Status Properti") },
             modifier = Modifier.fillMaxWidth(),
-            enabled = enabled,
             singleLine = true
         )
+
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             OutlinedTextField(
-                value = updateUiEvent.idJenis,
-                onValueChange = { onValueChange(updateUiEvent.copy(idJenis = it)) },
+                value = idJenis,
+                onValueChange = { idJenis = it },
                 label = { Text("ID Jenis") },
-                modifier = Modifier.fillMaxWidth().weight(1f),
-                enabled = enabled,
+                modifier = Modifier.weight(1f),
                 singleLine = true
             )
+
             OutlinedTextField(
-                value = updateUiEvent.idPemilik,
-                onValueChange = { onValueChange(updateUiEvent.copy(idPemilik = it)) },
+                value = idPemilik,
+                onValueChange = { idPemilik = it },
                 label = { Text("ID Pemilik") },
-                modifier = Modifier.fillMaxWidth().weight(1f),
-                enabled = enabled,
+                modifier = Modifier.weight(1f),
                 singleLine = true
             )
+
             OutlinedTextField(
-                value = updateUiEvent.idManajer,
-                onValueChange = { onValueChange(updateUiEvent.copy(idManajer = it)) },
+                value = idManajer,
+                onValueChange = { idManajer = it },
                 label = { Text("ID Manajer") },
-                modifier = Modifier.fillMaxWidth().weight(1f),
-                enabled = enabled,
+                modifier = Modifier.weight(1f),
                 singleLine = true
             )
+        }
+
+        Button(
+            onClick = {
+                onUpdateClick(
+                    UpdateUiEvent(
+                        idProperti = idProperti,
+                        namaProperti = namaProperti,
+                        deskripsiProperti = deskripsiProperti,
+                        lokasi = lokasi,
+                        harga = harga,
+                        statusProperti = statusProperti,
+                        idJenis = idJenis,
+                        idPemilik = idPemilik,
+                        idManajer = idManajer
+                    )
+                )
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Update")
         }
     }
 }

@@ -41,19 +41,17 @@ fun DetailJenisScreen(
     modifier: Modifier = Modifier
 ) {
     val uiState = viewModel.uiState.collectAsState()
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     LaunchedEffect(idJenis) {
         viewModel.getJenisById(idJenis)
     }
 
     Scaffold(
-        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = modifier,
         topBar = {
             CostumeTopAppBar(
                 title = DestinasiDetailJenis.titleRes,
                 canNavigateBack = true,
-                scrollBehavior = scrollBehavior,
                 navigateUp = onNavigateBack
             )
         },

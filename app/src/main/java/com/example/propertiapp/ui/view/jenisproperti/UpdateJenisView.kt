@@ -28,7 +28,6 @@ fun UpdateScreenJenis(
     modifier: Modifier = Modifier,
     viewModel: UpdateJenisVM = viewModel(factory = PenyediaViewModel.Factory)
 ) {
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val uiState by viewModel.uiState.collectAsState()
 
     LaunchedEffect(idJenis) {
@@ -36,12 +35,11 @@ fun UpdateScreenJenis(
     }
 
     Scaffold(
-        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = modifier,
         topBar = {
             CostumeTopAppBar(
                 title = DestinasiUpdateJenis.titleRes,
                 canNavigateBack = true,
-                scrollBehavior = scrollBehavior,
                 navigateUp = onNavigateBack
             )
         }

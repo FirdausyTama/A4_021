@@ -29,7 +29,6 @@ fun UpdateScreenManajer(
     modifier: Modifier = Modifier,
     viewModel: UpdateManajerVM = viewModel(factory = PenyediaViewModel.Factory)
 ) {
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val uiState by viewModel.uiState.collectAsState()
 
     LaunchedEffect(idManajer) {
@@ -37,12 +36,11 @@ fun UpdateScreenManajer(
     }
 
     Scaffold(
-        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = modifier,
         topBar = {
             CostumeTopAppBar(
                 title = DestinasiUpdateManajer.titleRes,
                 canNavigateBack = true,
-                scrollBehavior = scrollBehavior,
                 navigateUp = onNavigateBack
             )
         }

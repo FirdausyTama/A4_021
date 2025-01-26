@@ -1,6 +1,7 @@
 package com.example.propertiapp.ui.view.manajer
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -13,8 +14,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -39,10 +42,9 @@ fun ManajerScreen(
     navigateBack: () -> Unit,
     viewModel: HomeManajerVM = viewModel(factory = PenyediaViewModel.Factory)
 ) {
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = Modifier,
         topBar = {
             TopAppBar(
                 title = {
@@ -65,7 +67,6 @@ fun ManajerScreen(
                     titleContentColor = MaterialTheme.colorScheme.onPrimary,
                     navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
                 ),
-                scrollBehavior = scrollBehavior,
                 actions = {
                     IconButton(onClick = { viewModel.getManajer() }) {
                         Icon(
@@ -103,78 +104,76 @@ fun ManajerContent(
     onDetailClick: (Int) -> Unit,
     onDeleteClick: (Manajer) -> Unit
 ) {
-    Box(modifier = modifier) {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(bottom = 16.dp)
-        ) {
-            item {
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surface
-                    )
-                ) {
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.logo),
-                                contentDescription = "",
-                                modifier = Modifier.size(100.dp),
-                                tint = Color(0xFF3700B3)
+    LazyColumn(
+        modifier = modifier,
+        contentPadding = PaddingValues(vertical = 16.dp)
+    ) {
+        item {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surface
+                )
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.logo),
+                            contentDescription = "",
+                            modifier = Modifier.size(100.dp),
+                            tint = Color(0xFF3700B3)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Column {
+                            Text(
+                                text = "Daftar Manajer Properti",
+                                style = MaterialTheme.typography.titleLarge
                             )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Column {
-                                Text(
-                                    text = "Daftar Manajer Properti",
-                                    style = MaterialTheme.typography.titleLarge
-                                )
-                                Text(
-                                    text = "Kelola data manajer properti",
-                                    style = MaterialTheme.typography.bodyMedium
-                                )
-                            }
+                            Text(
+                                text = "Kelola data manajer properti",
+                                style = MaterialTheme.typography.bodyMedium
+                            )
                         }
                     }
                 }
             }
+        }
 
-            item {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
-                ) {
-                    Button(
-                        onClick = onAddClick,
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Text("+ Tambah Manajer")
-                    }
-                }
-                Spacer(modifier = Modifier.height(10.dp))
+        item {
+            Button(
+                onClick = onAddClick,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Add",
+                    modifier = Modifier.size(24.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("Tambah Manajer")
             }
+        }
 
-            when (manajerUiState) {
-                is ManajerUiState.Loading -> {
-                    item { OnLoading(modifier = Modifier.fillParentMaxSize()) }
+        when (manajerUiState) {
+            is ManajerUiState.Loading -> {
+                item { OnLoading(modifier = Modifier.fillParentMaxSize()) }
+            }
+            is ManajerUiState.Success -> {
+                items(manajerUiState.manajer) { manajer ->
+                    ManajerCard(
+                        manajer = manajer,
+                        onClick = { onDetailClick(manajer.idManajer) },
+                        onDeleteClick = { onDeleteClick(manajer) }
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
                 }
-                is ManajerUiState.Success -> {
-                    items(manajerUiState.manajer) { manajer ->
-                        ManajerCard(
-                            manajer = manajer,
-                            onClick = { onDetailClick(manajer.idManajer) },
-                            onDeleteClick = { onDeleteClick(manajer) },
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                    }
-                }
-                is ManajerUiState.Error -> {
-                    item { OnError(retryAction, modifier = Modifier.fillParentMaxSize()) }
-                }
+            }
+            is ManajerUiState.Error -> {
+                item { OnError(retryAction, modifier = Modifier.fillParentMaxSize()) }
             }
         }
     }
@@ -189,25 +188,53 @@ fun ManajerCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
+            .padding(horizontal = 16.dp)
             .clickable(onClick = onClick),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         )
     ) {
-        Column(
+        Row(
             modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
+            Image(
+                painter = painterResource(id = R.drawable.propil),
+                contentDescription = "Profile",
+                modifier = Modifier
+                    .size(50.dp)
+                    .background(MaterialTheme.colorScheme.primaryContainer),
+                contentScale = ContentScale.Crop
+            )
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 Text(
                     text = manajer.namaManajer,
-                    style = MaterialTheme.typography.titleLarge,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
                 )
-                Spacer(Modifier.weight(1f))
-                IconButton(onClick = {}) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = Icons.Default.Phone,
+                        contentDescription = "Contact",
+                        modifier = Modifier.size(16.dp),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = manajer.kontakManajer,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+            }
+
+            Row {
+                IconButton(onClick = onClick) {
                     Icon(
                         imageVector = Icons.Default.Info,
                         contentDescription = "Info"
@@ -219,19 +246,6 @@ fun ManajerCard(
                         contentDescription = "Delete"
                     )
                 }
-            }
-
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    imageVector = Icons.Default.Phone,
-                    contentDescription = "Contact",
-                    modifier = Modifier.size(16.dp)
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(
-                    text = manajer.kontakManajer,
-                    style = MaterialTheme.typography.bodyMedium
-                )
             }
         }
     }

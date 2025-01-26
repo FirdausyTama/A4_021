@@ -6,10 +6,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -23,6 +21,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.propertiapp.R
@@ -49,7 +48,6 @@ fun HomeScreen(
     viewModel: HomeViewModel = viewModel(factory = PenyediaViewModel.Factory)
 ) {
     var selectedCategory by remember { mutableStateOf("All") }
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -87,7 +85,6 @@ fun HomeScreen(
                             .background(color = Color.White, shape = CircleShape)
                     )
                 },
-                scrollBehavior = scrollBehavior
             )
         }
     ) { innerPadding ->
@@ -95,7 +92,6 @@ fun HomeScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .verticalScroll(rememberScrollState())
         ) {
             Column(
                 modifier = Modifier
@@ -115,9 +111,7 @@ fun HomeScreen(
                         icon = Icons.Default.Home,
                         text = "All",
                         isSelected = selectedCategory == "All",
-                        onClick = {
-                            selectedCategory = "All"
-                        }
+                        onClick = { selectedCategory = "All" }
                     )
                     CategoryItem(
                         icon = Icons.Default.Favorite,
@@ -184,40 +178,46 @@ fun HomeScreen(
                     }
                 }
 
-                // Property List Content
-                when (val uiState = viewModel.propertiUiState) {
-                    is HomeUiState.Success -> {
-                        uiState.properti.forEach { properti ->
-                            PropertyCard(
-                                properti = properti,
-                                onDetailClick = { onDetailClick(properti.idProperti) },
-                                onDeleteClick = {
-                                    viewModel.deleteProperti(properti.idProperti)
-                                    viewModel.getProperti()
+                // Property List Content in LazyColumn
+                LazyColumn {
+                    when (val uiState = viewModel.propertiUiState) {
+                        is HomeUiState.Success -> {
+                            items(uiState.properti) { properti ->
+                                PropertyCard(
+                                    properti = properti,
+                                    onDetailClick = { onDetailClick(properti.idProperti) },
+                                    onDeleteClick = {
+                                        viewModel.deleteProperti(properti.idProperti)
+                                        viewModel.getProperti()
+                                    }
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
+                            }
+                        }
+                        is HomeUiState.Loading -> {
+                            item {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(200.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    OnLoading(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .height(200.dp)
+                                    )
                                 }
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
+                            }
                         }
-                    }
-                    is HomeUiState.Loading -> {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(200.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            OnLoading(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(200.dp)
-                            )
+                        is HomeUiState.Error -> {
+                            item {
+                                OnError(
+                                    retryAction = { viewModel.getProperti() },
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                            }
                         }
-                    }
-                    is HomeUiState.Error -> {
-                        OnError(
-                            retryAction = { viewModel.getProperti() },
-                            modifier = Modifier.fillMaxWidth()
-                        )
                     }
                 }
             }
@@ -277,78 +277,102 @@ fun PropertyCard(
             .clickable(onClick = onDetailClick),
         shape = RoundedCornerShape(16.dp)
     ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+        Column {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
             ) {
-                Text(
-                    properti.namaProperti,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
+                Image(
+                    painter = painterResource(id = R.drawable.properti),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize()
                 )
-                Row {
-                    IconButton(onClick = onDetailClick) {
-                        Icon(Icons.Default.Info, contentDescription = "Detail")
-                    }
-                    IconButton(onClick = onDeleteClick) {
-                        Icon(Icons.Default.Delete, contentDescription = "Delete")
-                    }
+                Surface(
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(8.dp),
+                    color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.9f),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Text(
+                        "Rp ${properti.harga}",
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
                 }
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    Icons.Default.Info,
-                    contentDescription = "Description",
-                    modifier = Modifier.size(16.dp),
-                    tint = Color.Gray
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(
-                    properti.deskripsiProperti,
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+            Column(
+                modifier = Modifier.padding(16.dp)
             ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        properti.namaProperti,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Row {
+                        IconButton(onClick = onDetailClick) {
+                            Icon(Icons.Default.Info, contentDescription = "Detail")
+                        }
+                        IconButton(onClick = onDeleteClick) {
+                            Icon(Icons.Default.Delete, contentDescription = "Delete")
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
-                        Icons.Default.LocationOn,
-                        contentDescription = "Location",
+                        Icons.Default.Info,
+                        contentDescription = "Description",
                         modifier = Modifier.size(16.dp),
                         tint = Color.Gray
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
-                        properti.lokasi,
-                        style = MaterialTheme.typography.bodySmall,
+                        properti.deskripsiProperti,
+                        style = MaterialTheme.typography.bodyMedium,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
-            }
 
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            Icons.Default.LocationOn,
+                            contentDescription = "Location",
+                            modifier = Modifier.size(16.dp),
+                            tint = Color.Gray
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            properti.lokasi,
+                            style = MaterialTheme.typography.bodySmall,
+                        )
+                    }
+                }
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
                         Icons.Default.Lock,
                         contentDescription = "Status",
                         modifier = Modifier.size(16.dp),
                         tint = Color.Gray
-
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
@@ -356,13 +380,6 @@ fun PropertyCard(
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }
-
-                Text(
-                    "Rp ${properti.harga}",
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary
-                )
             }
         }
     }

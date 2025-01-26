@@ -42,19 +42,17 @@ fun DetailPemilikScreen(
     modifier: Modifier = Modifier
 ) {
     val uiState = viewModel.uiState.collectAsState()
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     LaunchedEffect(idPemilik) {
         viewModel.getPemilikById(idPemilik)
     }
 
     Scaffold(
-        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = modifier,
         topBar = {
             CostumeTopAppBar(
                 title = DestinasiDetailPemilik.titleRes,
                 canNavigateBack = true,
-                scrollBehavior = scrollBehavior,
                 navigateUp = onNavigateBack
             )
         },

@@ -41,15 +41,13 @@ fun EntryJenisScreen(
 ) {
     val uiState = viewModel.uiState
     val coroutineScope = rememberCoroutineScope()
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = Modifier,
         topBar = {
             CostumeTopAppBar(
                 title = DestinasiEntryJenis.titleRes,
                 canNavigateBack = true,
-                scrollBehavior = scrollBehavior,
                 navigateUp = navigateBack
             )
         }

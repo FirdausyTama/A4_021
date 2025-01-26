@@ -42,15 +42,14 @@ fun InsertPemilikView(
 ) {
     val uiState = viewModel.uiState
     val coroutineScope = rememberCoroutineScope()
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+
 
     Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = Modifier,
         topBar = {
             CostumeTopAppBar(
                 title = DestinasiEntryPemilik.titleRes,
                 canNavigateBack = true,
-                scrollBehavior = scrollBehavior,
                 navigateUp = onNavigateBack // Use specific navigation handler
             )
         }

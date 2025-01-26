@@ -28,7 +28,6 @@ fun UpdateScreenPemilik(
     modifier: Modifier = Modifier,
     viewModel: UpdateViewModelPemilik = viewModel(factory = PenyediaViewModel.Factory)
 ) {
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val uiState by viewModel.uiState.collectAsState()
 
     LaunchedEffect(idPemilik) {
@@ -36,12 +35,11 @@ fun UpdateScreenPemilik(
     }
 
     Scaffold(
-        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = modifier,
         topBar = {
             CostumeTopAppBar(
                 title = DestinasiUpdatePemilik.titleRes,
                 canNavigateBack = true,
-                scrollBehavior = scrollBehavior,
                 navigateUp = onNavigateBack
             )
         }

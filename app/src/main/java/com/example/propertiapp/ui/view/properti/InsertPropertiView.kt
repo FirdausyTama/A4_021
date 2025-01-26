@@ -59,7 +59,6 @@ fun EntryPropertiScreen(
 ) {
     val uiState = viewModel.uiState
     val coroutineScope = rememberCoroutineScope()
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     var chosenDropdown by remember {
         mutableStateOf(
@@ -71,12 +70,11 @@ fun EntryPropertiScreen(
 
 
     Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = Modifier,
         topBar = {
             CostumeTopAppBar(
                 title = DestinasiEntry.titleRes,
                 canNavigateBack = true,
-                scrollBehavior = scrollBehavior,
                 navigateUp = navigateBack
             )
         }

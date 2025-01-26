@@ -30,7 +30,6 @@ fun EditPropertiScreen(
     modifier: Modifier = Modifier,
     viewModel: UpdatePropertiVM = viewModel(factory = PenyediaViewModel.Factory)
 ) {
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val uiState by viewModel.uiState.collectAsState()
 
     LaunchedEffect(idProperti) {
@@ -38,12 +37,11 @@ fun EditPropertiScreen(
     }
 
     Scaffold(
-        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = modifier,
         topBar = {
             CostumeTopAppBar(
                 title = DestinasiEditProperti.titleRes,
                 canNavigateBack = true,
-                scrollBehavior = scrollBehavior,
                 navigateUp = onNavigateBack
             )
         }

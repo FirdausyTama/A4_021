@@ -23,7 +23,7 @@ object DestinasiUpdatePemilik : DestinasiNavigasi {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UpdateScreenPemilik(
-    idPemilik: String,
+    idPemilik: Int,
     onNavigateBack: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: UpdateViewModelPemilik = viewModel(factory = PenyediaViewModel.Factory)
@@ -81,7 +81,7 @@ fun UpdateScreenPemilik(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UpdateForm(
-    idPemilik: String,
+    idPemilik: Int,
     namaPemilik: String,
     kontakPemilik: String,
     onUpdateClick: (UpdateUiEvent) -> Unit,
@@ -95,14 +95,6 @@ fun UpdateForm(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        OutlinedTextField(
-            value = idPemilik,
-            onValueChange = { idPemilik = it },
-            label = { Text("ID Pemilik") },
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true
-        )
-
         OutlinedTextField(
             value = namaPemilik,
             onValueChange = { namaPemilik = it },

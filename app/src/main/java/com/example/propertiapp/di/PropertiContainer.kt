@@ -8,6 +8,7 @@ import com.example.propertiapp.repository.NetworkJenisRepository
 import com.example.propertiapp.repository.NetworkManajerRepository
 import com.example.propertiapp.repository.PemilikRepository
 import com.example.propertiapp.repository.NetworkPemilikRepository
+import com.example.propertiapp.service.JenisService
 import com.example.propertiapp.service.ManajerService
 import com.example.propertiapp.service.PemilikService
 import com.example.propertiapp.service.PropertiService
@@ -43,12 +44,16 @@ class PropertiContainer : AppContainer {
         retrofit.create(ManajerService::class.java)
     }
 
+    private val jenisService: JenisService by lazy {
+        retrofit.create(JenisService::class.java)
+    }
+
     override val propertiRepository: PropertiRepository by lazy {
         NetworkPropertiRepository(propertiService)
     }
 
     override val jenisRepository: JenisRepository by lazy {
-        NetworkJenisRepository(propertiService)
+        NetworkJenisRepository(jenisService)
     }
 
     override val pemilikRepository: PemilikRepository by lazy {

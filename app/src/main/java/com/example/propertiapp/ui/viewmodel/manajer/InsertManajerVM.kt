@@ -17,7 +17,7 @@ class InsertManajerVM(private val manajerRepository: ManajerRepository) : ViewMo
         uiState = InsertManajerUiState(insertUiEvent = insertUiEvent)
     }
 
-    suspend fun insertManajer() {
+    fun insertManajer() {
         viewModelScope.launch {
             try {
                 manajerRepository.insertManajer(uiState.insertUiEvent.toManajer())
@@ -33,7 +33,7 @@ data class InsertManajerUiState(
 )
 
 data class InsertManajerUiEvent(
-    val idManajer: String = "",
+    val idManajer: Int = 0,
     val namaManajer: String = "",
     val kontakManajer: String = ""
 )

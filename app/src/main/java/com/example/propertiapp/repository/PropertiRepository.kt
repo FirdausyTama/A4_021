@@ -7,9 +7,9 @@ import okio.IOException
 interface PropertiRepository {
     suspend fun insertProperti(properti: Properti)
     suspend fun getProperti(): List<Properti>
-    suspend fun updateProperti(idProperti: String, properti: Properti)
-    suspend fun deleteProperti(idProperti: String)
-    suspend fun getPropertiById(idProperti: String): Properti
+    suspend fun updateProperti(idProperti: Int, properti: Properti)
+    suspend fun deleteProperti(idProperti: Int)
+    suspend fun getPropertiById(idProperti: Int): Properti
 }
 
 class NetworkPropertiRepository(
@@ -19,11 +19,11 @@ class NetworkPropertiRepository(
         propertiApiService.insertProperti(properti)
     }
 
-    override suspend fun updateProperti(idProperti: String, properti: Properti) {
+    override suspend fun updateProperti(idProperti: Int, properti: Properti) {
         propertiApiService.updateProperti(idProperti, properti)
     }
 
-    override suspend fun deleteProperti(idProperti: String) {
+    override suspend fun deleteProperti(idProperti: Int) {
         try {
             val response = propertiApiService.deleteProperti(idProperti)
             if (!response.isSuccessful) {
@@ -41,7 +41,7 @@ class NetworkPropertiRepository(
     override suspend fun getProperti(): List<Properti> =
         propertiApiService.getAllProperti()
 
-    override suspend fun getPropertiById(idProperti: String): Properti {
+    override suspend fun getPropertiById(idProperti: Int): Properti {
         return propertiApiService.getPropertiById(idProperti)
     }
 }

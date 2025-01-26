@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.propertiapp.model.JenisMenu
 import com.example.propertiapp.model.StatusPropertiMenu
 import com.example.propertiapp.navigasi.DestinasiNavigasi
 import com.example.propertiapp.ui.costumewidget.CostumeTopAppBar
@@ -35,6 +36,12 @@ import com.example.propertiapp.ui.costumewidget.DynamicSelectedTextField
 import com.example.propertiapp.ui.viewmodel.properti.InsertUiEvent
 import com.example.propertiapp.ui.viewmodel.properti.InsertViewModel
 import com.example.propertiapp.ui.viewmodel.PenyediaViewModel
+import com.example.propertiapp.ui.viewmodel.jenisproperti.JenisUiState
+import com.example.propertiapp.ui.viewmodel.jenisproperti.JenisViewModel
+import com.example.propertiapp.ui.viewmodel.manajer.HomeManajerVM
+import com.example.propertiapp.ui.viewmodel.manajer.ManajerUiState
+import com.example.propertiapp.ui.viewmodel.pemilik.HomePemilikVM
+import com.example.propertiapp.ui.viewmodel.pemilik.PemilikUiState
 import com.example.propertiapp.ui.viewmodel.properti.InsertUiState
 import kotlinx.coroutines.launch
 
@@ -124,23 +131,12 @@ fun FormInput(
     insertUiEvent: InsertUiEvent,
     modifier: Modifier = Modifier,
     onValueChange: (InsertUiEvent) -> Unit = {},
-    enabled: Boolean = true
-) {
+    enabled: Boolean = true,
+){
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        // ID Properti field
-        OutlinedTextField(
-            value = insertUiEvent.idProperti,
-            onValueChange = { onValueChange(insertUiEvent.copy(idProperti = it)) },
-            label = { Text("ID Properti") },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = enabled,
-            placeholder = { Text("Masukkan ID Properti") },
-            singleLine = true
-        )
-
         // Existing fields remain the same
         OutlinedTextField(
             value = insertUiEvent.namaProperti,
@@ -195,41 +191,32 @@ fun FormInput(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            OutlinedTextField(
-                value = insertUiEvent.idJenis,
-                onValueChange = { onValueChange(insertUiEvent.copy(idJenis = it)) },
-                label = { Text("ID Jenis") },
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth(),
-                enabled = enabled,
-                placeholder = { Text("Masukkan ID Jenis") },
-                singleLine = true
+            DynamicSelectedTextField(
+                selectedValue = insertUiEvent.idJenis, // Changed from namaDokter to namaJenis
+                options = JenisMenu.jenisOptions(), // Changed from NamaDokter.options() to JenisMenu.jenisOptions()
+                label = "Jenis", // Updated label to match
+                onValueChangedEvent = { selectedJenis -> // Changed variable name
+                    onValueChange(insertUiEvent.copy(idJenis = selectedJenis)) // Updated property name
+                },
+                modifier = Modifier.weight(1f)
             )
-
-            OutlinedTextField(
-                value = insertUiEvent.idPemilik,
-                onValueChange = { onValueChange(insertUiEvent.copy(idPemilik = it)) },
-                label = { Text("ID Pemilik") },
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth(),
-                enabled = enabled,
-                placeholder = { Text("Masukkan ID Pemilik") },
-                singleLine = true
-            )
-
-            OutlinedTextField(
-                value = insertUiEvent.idManajer,
-                onValueChange = { onValueChange(insertUiEvent.copy(idManajer = it)) },
-                label = { Text("ID Manajer") },
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth(),
-                enabled = enabled,
-                placeholder = { Text("Masukkan ID Manajer") },
-                singleLine = true
+            DynamicSelectedTextField(
+                selectedValue = insertUiEvent.idPemilik, // Changed from namaDokter to namaJenis
+                options = JenisMenu.pemilikOptions(), // Changed from NamaDokter.options() to JenisMenu.jenisOptions()
+                label = "Milik", // Updated label to match
+                onValueChangedEvent = { selectedJenis -> // Changed variable name
+                    onValueChange(insertUiEvent.copy(idPemilik = selectedJenis)) // Updated property name
+                },
+                modifier = Modifier.weight(1f)
             )
         }
+        DynamicSelectedTextField(
+            selectedValue = insertUiEvent.idManajer, // Changed from namaDokter to namaJenis
+            options = JenisMenu.manajerOptions(), // Changed from NamaDokter.options() to JenisMenu.jenisOptions()
+            label = "Manajer", // Updated label to match
+            onValueChangedEvent = { selectedJenis -> // Changed variable name
+                onValueChange(insertUiEvent.copy(idManajer = selectedJenis)) // Updated property name
+            },
+        )
     }
 }

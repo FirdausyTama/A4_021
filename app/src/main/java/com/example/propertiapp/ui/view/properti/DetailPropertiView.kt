@@ -44,9 +44,9 @@ object DestinasiDetailProperti : DestinasiNavigasi {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailPropertiScreen(
-    idProperti: String,
+    idProperti: Int,
     onNavigateBack: () -> Unit,
-    onEditClick: (String) -> Unit, // Tambahkan parameter idProperti
+    onEditClick: (Int) -> Unit, // Tambahkan parameter idProperti
     navigateToJenis: () -> Unit,
     viewModel: DetailPropertiViewModel = viewModel(factory = PenyediaViewModel.Factory),
     modifier: Modifier = Modifier

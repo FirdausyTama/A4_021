@@ -110,16 +110,6 @@ fun FormInputJenis(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         OutlinedTextField(
-            value = insertUiEvent.idJenis,
-            onValueChange = { onValueChange(insertUiEvent.copy(idJenis = it)) },
-            label = { Text("ID Jenis") },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = enabled,
-            placeholder = { Text("Masukkan ID Jenis") },
-            singleLine = true
-        )
-
-        OutlinedTextField(
             value = insertUiEvent.namaJenis,
             onValueChange = { onValueChange(insertUiEvent.copy(namaJenis = it)) },
             label = { Text("Nama Jenis") },

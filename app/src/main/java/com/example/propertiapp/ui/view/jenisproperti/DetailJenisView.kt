@@ -1,29 +1,22 @@
 package com.example.propertiapp.ui.view.jenisproperti
 
-import android.util.Log
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.propertiapp.model.Jenis
@@ -41,9 +34,9 @@ object DestinasiDetailJenis : DestinasiNavigasi {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailJenisScreen(
-    idJenis: String,
+    idJenis: Int,
     onNavigateBack: () -> Unit,
-    onEditClick: () -> Unit,
+    onEditClick: (Int) -> Unit,
     viewModel: DetailJenisViewModel = viewModel(factory = PenyediaViewModel.Factory),
     modifier: Modifier = Modifier
 ) {
@@ -51,7 +44,6 @@ fun DetailJenisScreen(
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     LaunchedEffect(idJenis) {
-        Log.d("DetailJenisScreen", "Loading jenis with ID: $idJenis")
         viewModel.getJenisById(idJenis)
     }
 
@@ -66,31 +58,28 @@ fun DetailJenisScreen(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = onEditClick,
-                shape = MaterialTheme.shapes.medium,
-                modifier = Modifier.padding(18.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Edit,
-                    contentDescription = "Edit Jenis"
-                )
-            }
+            ExtendedFloatingActionButton(
+                onClick = { onEditClick(idJenis) },
+                icon = {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = "Edit Jenis"
+                    )
+                },
+                text = { Text("Edit") }
+            )
         },
     ) { innerPadding ->
         when (val state = uiState.value) {
             is DetailJenisUiState.Loading -> LoadingScreen(modifier = modifier.fillMaxSize())
             is DetailJenisUiState.Success -> {
-                Column(
+                DetailJenisContent(
+                    jenis = state.jenis,
                     modifier = modifier
                         .fillMaxSize()
                         .padding(innerPadding)
-                        .padding(16.dp),
-                    verticalArrangement = Arrangement.Top,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    DetailJenisCard(jenis = state.jenis)
-                }
+                        .padding(16.dp)
+                )
             }
             is DetailJenisUiState.Error -> ErrorScreen(
                 retryAction = { viewModel.getJenisById(idJenis) }
@@ -100,40 +89,86 @@ fun DetailJenisScreen(
 }
 
 @Composable
-fun DetailJenisCard(jenis: Jenis) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp),
-        shape = MaterialTheme.shapes.medium,
+fun DetailJenisContent(
+    jenis: Jenis,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Column(
+        Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+                .clip(RoundedCornerShape(16.dp)),
+            elevation = CardDefaults.cardElevation(4.dp)
         ) {
+            Column(
+                modifier = Modifier
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                DetailItem(
+                    icon = Icons.Default.Home,
+                    title = "Jenis",
+                    content = jenis.namaJenis
+                )
 
+                Divider(
+                    modifier = Modifier.padding(vertical = 8.dp),
+                    color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+                )
 
-            // Nama Jenis
+                DetailItem(
+                    icon = Icons.Default.Star,
+                    title = "ID Jenis",
+                    content = jenis.idJenis
+                )
+
+                Divider(
+                    modifier = Modifier.padding(vertical = 8.dp),
+                    color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+                )
+
+                DetailItem(
+                    icon = Icons.Default.Info,
+                    title = "Deskripsi",
+                    content = jenis.deskripsiJenis
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun DetailItem(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    title: String,
+    content: Any
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = title,
+            tint = MaterialTheme.colorScheme.primary
+        )
+        Column {
             Text(
-                text = "Jenis: ${jenis.namaJenis}",
-                style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                text = title,
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontWeight = FontWeight.Medium
             )
-
-            // ID Jenis
             Text(
-                text = "ID Jenis: ${jenis.idJenis}",
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-
-            // Deskripsi Jenis
-            Text(
-                text = "Deskripsi: ${jenis.deskripsiJenis}",
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                text = content.toString(),
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface
             )
         }
     }

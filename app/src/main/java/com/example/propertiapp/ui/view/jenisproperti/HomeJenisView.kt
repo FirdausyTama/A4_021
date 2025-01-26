@@ -26,7 +26,7 @@ import com.example.propertiapp.ui.viewmodel.jenisproperti.JenisUiState
 import com.example.propertiapp.ui.viewmodel.jenisproperti.JenisViewModel
 
 object DestinasiJenis : DestinasiNavigasi {
-    override val route = "jenis"
+    override val route = "jenis_home"
     override val titleRes = "Jenis Properti"
 }
 
@@ -35,7 +35,7 @@ object DestinasiJenis : DestinasiNavigasi {
 fun JenisScreen(
     navigateToItemEntry: () -> Unit,
     modifier: Modifier = Modifier,
-    onDetailClick: (String) -> Unit = {},
+    onDetailClick: (Int) -> Unit = {},
     navigateBack: () -> Unit, // Add this parameter
     viewModel: JenisViewModel = viewModel(factory = PenyediaViewModel.Factory)
 ) {
@@ -100,7 +100,7 @@ fun JenisContent(
     onAddClick: () -> Unit = {},
     jenisUiState: JenisUiState,
     retryAction: () -> Unit,
-    onDetailClick: (String) -> Unit,
+    onDetailClick: (Int) -> Unit,
     onDeleteClick: (Jenis) -> Unit
 ) {
     Box(modifier = modifier) {

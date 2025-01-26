@@ -38,7 +38,7 @@ class HomeViewModel(private val propertiRepo: PropertiRepository): ViewModel() {
         }
     }
 
-    fun deleteProperti(idProperti: String) {
+    fun deleteProperti(idProperti: Int) {
         viewModelScope.launch {
             try {
                 propertiRepo.deleteProperti(idProperti)

@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 data class UpdateUiEvent(
-    val idProperti: String,
+    val idProperti: Int = 0,
     val namaProperti: String,
     val deskripsiProperti: String,
     val lokasi: String,
@@ -36,7 +36,7 @@ class UpdatePropertiVM(
 
     private var currentFormData: UpdateUiEvent? = null
 
-    fun loadPropertiData(idProperti: String) {
+    fun loadPropertiData(idProperti: Int) {
         _uiState.value = UpdateUiState.Loading
         viewModelScope.launch {
             try {

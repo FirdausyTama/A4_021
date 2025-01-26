@@ -9,8 +9,11 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.propertiapp.model.JenisMenu
+import com.example.propertiapp.model.StatusPropertiMenu
 import com.example.propertiapp.navigasi.DestinasiNavigasi
 import com.example.propertiapp.ui.costumewidget.CostumeTopAppBar
+import com.example.propertiapp.ui.costumewidget.DynamicSelectedTextField
 import com.example.propertiapp.ui.viewmodel.PenyediaViewModel
 import com.example.propertiapp.ui.viewmodel.properti.*
 
@@ -22,7 +25,7 @@ object DestinasiEditProperti : DestinasiNavigasi {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditPropertiScreen(
-    idProperti: String,
+    idProperti: Int,
     onNavigateBack: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: UpdatePropertiVM = viewModel(factory = PenyediaViewModel.Factory)
@@ -86,7 +89,7 @@ fun EditPropertiScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UpdateForm(
-    idProperti: String,
+    idProperti: Int,
     namaProperti: String,
     deskripsiProperti: String,
     lokasi: String,
@@ -144,42 +147,47 @@ fun UpdateForm(
             singleLine = true,
         )
 
-        OutlinedTextField(
-            value = statusProperti,
-            onValueChange = { statusProperti = it },
-            label = { Text("Status Properti") },
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true
+        DynamicSelectedTextField(
+            selectedValue = statusProperti,
+            options = StatusPropertiMenu.options,
+            label = "Status",
+            onValueChangedEvent = { spesialis ->
+                statusProperti = spesialis
+            },
+            modifier = Modifier.fillMaxWidth()
         )
 
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            OutlinedTextField(
-                value = idJenis,
-                onValueChange = { idJenis = it },
-                label = { Text("ID Jenis") },
-                modifier = Modifier.weight(1f),
-                singleLine = true
+            DynamicSelectedTextField(
+                selectedValue = idJenis,
+                options = JenisMenu.jenisOptions(),
+                label = "Jenis",
+                onValueChangedEvent = { selectedJenis ->
+                    idJenis = selectedJenis
+                },
+                modifier = Modifier.weight(1f)
             )
-
-            OutlinedTextField(
-                value = idPemilik,
-                onValueChange = { idPemilik = it },
-                label = { Text("ID Pemilik") },
-                modifier = Modifier.weight(1f),
-                singleLine = true
-            )
-
-            OutlinedTextField(
-                value = idManajer,
-                onValueChange = { idManajer = it },
-                label = { Text("ID Manajer") },
-                modifier = Modifier.weight(1f),
-                singleLine = true
+            DynamicSelectedTextField(
+                selectedValue = idPemilik,
+                options = JenisMenu.pemilikOptions(),
+                label = "Milik",
+                onValueChangedEvent = { selectedPemilik ->
+                    idPemilik = selectedPemilik
+                },
+                modifier = Modifier.weight(1f)
             )
         }
+        DynamicSelectedTextField(
+            selectedValue = idManajer,
+            options = JenisMenu.manajerOptions(),
+            label = "Manajer",
+            onValueChangedEvent = { selectedManajer ->
+                idManajer = selectedManajer
+            }
+        )
 
         Button(
             onClick = {

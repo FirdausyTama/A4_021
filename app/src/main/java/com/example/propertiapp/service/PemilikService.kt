@@ -27,11 +27,11 @@ interface PemilikService {
     suspend fun getAllPemilik(): List<Pemilik>
 
     @GET("baca1pemilik.php")
-    suspend fun getPemilikById(@Query("id_pemilik") idPemilik: String): Pemilik
+    suspend fun getPemilikById(@Query("id_pemilik") idPemilik: Int): Pemilik
 
     @PUT("editpemilik.php/{idPemilik}")
-    suspend fun updatePemilik(@Query("id_pemilik") idPemilik: String, @Body pemilik: Pemilik)
+    suspend fun updatePemilik(@Query("id_pemilik") idPemilik: Int, @Body pemilik: Pemilik)
 
     @DELETE("deletepemilik.php")
-    suspend fun deletePemilik(@Query("id_pemilik") idPemilik: String): Response<Void>
+    suspend fun deletePemilik(@Query("id_pemilik") idPemilik: Int): Response<Void>
 }

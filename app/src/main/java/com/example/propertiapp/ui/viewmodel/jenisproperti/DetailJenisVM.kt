@@ -21,7 +21,7 @@ class DetailJenisViewModel(private val repository: JenisRepository) : ViewModel(
     private val _uiState = MutableStateFlow<DetailJenisUiState>(DetailJenisUiState.Loading)
     val uiState: StateFlow<DetailJenisUiState> = _uiState.asStateFlow()
 
-    fun getJenisById(idJenis: String) {
+    fun getJenisById(idJenis: Int) {
         viewModelScope.launch {
             _uiState.value = DetailJenisUiState.Loading
             try {
@@ -37,7 +37,7 @@ class DetailJenisViewModel(private val repository: JenisRepository) : ViewModel(
         }
     }
 
-    fun updateJenis(idJenis: String, jenis: Jenis) {
+    fun updateJenis(idJenis: Int, jenis: Jenis) {
         viewModelScope.launch {
             _uiState.value = DetailJenisUiState.Loading
             try {

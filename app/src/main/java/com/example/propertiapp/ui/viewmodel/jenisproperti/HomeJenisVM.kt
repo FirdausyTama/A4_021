@@ -38,7 +38,7 @@ class JenisViewModel(private val jenisRepo: JenisRepository): ViewModel() {
         }
     }
 
-    fun deleteJenis(idJenis: String) {
+    fun deleteJenis(idJenis: Int) {
         viewModelScope.launch {
             try {
                 jenisRepo.deleteJenis(idJenis)

@@ -38,7 +38,7 @@ class HomePemilikVM(private val pemilikRepo: PemilikRepository): ViewModel() {
         }
     }
 
-    fun deletePemilik(idPemilik: String) {
+    fun deletePemilik(idPemilik: Int) {
         viewModelScope.launch {
             try {
                 pemilikRepo.deletePemilik(idPemilik)

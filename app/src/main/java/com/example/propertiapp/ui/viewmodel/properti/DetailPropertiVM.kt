@@ -22,7 +22,7 @@ class DetailPropertiViewModel(private val repository: PropertiRepository) : View
     private val _uiState = MutableStateFlow<DetailPropertiUiState>(DetailPropertiUiState.Loading)
     val uiState: StateFlow<DetailPropertiUiState> = _uiState.asStateFlow()
 
-    fun getPropertiById(idProperti: String) {
+    fun getPropertiById(idProperti: Int) {
         viewModelScope.launch {
             _uiState.value = DetailPropertiUiState.Loading
             try {
@@ -38,7 +38,7 @@ class DetailPropertiViewModel(private val repository: PropertiRepository) : View
         }
     }
 
-    fun updateProperti(idProperti: String, properti: Properti) {
+    fun updateProperti(idProperti: Int, properti: Properti) {
         viewModelScope.launch {
             _uiState.value = DetailPropertiUiState.Loading
             try {

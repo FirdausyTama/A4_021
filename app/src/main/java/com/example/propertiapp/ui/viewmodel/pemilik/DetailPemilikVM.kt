@@ -21,7 +21,7 @@ class DetailPemilikViewModel(private val repository: PemilikRepository) : ViewMo
     private val _uiState = MutableStateFlow<DetailPemilikUiState>(DetailPemilikUiState.Loading)
     val uiState: StateFlow<DetailPemilikUiState> = _uiState.asStateFlow()
 
-    fun getPemilikById(idPemilik: String) {
+    fun getPemilikById(idPemilik: Int) {
         viewModelScope.launch {
             _uiState.value = DetailPemilikUiState.Loading
             try {
@@ -37,7 +37,7 @@ class DetailPemilikViewModel(private val repository: PemilikRepository) : ViewMo
         }
     }
 
-    fun updatePemilik(idPemilik: String, pemilik: Pemilik) {
+    fun updatePemilik(idPemilik: Int, pemilik: Pemilik) {
         viewModelScope.launch {
             _uiState.value = DetailPemilikUiState.Loading
             try {

@@ -33,7 +33,7 @@ data class InsertUiState(
 )
 
 data class InsertUiEvent(
-    val idProperti: String = "",
+    val idProperti: Int = 0,
     val namaProperti: String = "",
     val deskripsiProperti: String = "",
     val lokasi: String = "",

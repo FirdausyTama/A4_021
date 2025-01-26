@@ -33,7 +33,7 @@ data class InsertJenisUiState(
 )
 
 data class InsertJenisUiEvent(
-    val idJenis: String = "",
+    val idJenis: Int = 0,
     val namaJenis: String = "",
     val deskripsiJenis: String = ""
 )

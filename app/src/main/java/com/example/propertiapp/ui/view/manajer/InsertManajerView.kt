@@ -111,16 +111,6 @@ fun FormInputManajer(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         OutlinedTextField(
-            value = insertUiEvent.idManajer,
-            onValueChange = { onValueChange(insertUiEvent.copy(idManajer = it)) },
-            label = { Text("ID Manajer") },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = enabled,
-            placeholder = { Text("Masukkan ID Manajer") },
-            singleLine = true
-        )
-
-        OutlinedTextField(
             value = insertUiEvent.namaManajer,
             onValueChange = { onValueChange(insertUiEvent.copy(namaManajer = it)) },
             label = { Text("Nama Manajer") },

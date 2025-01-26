@@ -110,15 +110,6 @@ fun FormInputPemilik(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        OutlinedTextField(
-            value = insertUiEvent.idPemilik,
-            onValueChange = { onValueChange(insertUiEvent.copy(idPemilik = it)) },
-            label = { Text("ID Pemilik") },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = enabled,
-            placeholder = { Text("Masukkan ID Pemilik") },
-            singleLine = true
-        )
 
         OutlinedTextField(
             value = insertUiEvent.namaPemilik,

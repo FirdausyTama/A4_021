@@ -1,30 +1,22 @@
 package com.example.propertiapp.ui.view.manajer
 
-
-import android.util.Log
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.propertiapp.model.Manajer
@@ -42,7 +34,7 @@ object DestinasiDetailManajer : DestinasiNavigasi {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailManajerScreen(
-    idManajer: String,
+    idManajer: Int,
     onNavigateBack: () -> Unit,
     onEditClick: () -> Unit,
     viewModel: DetailManajerVM = viewModel(factory = PenyediaViewModel.Factory),
@@ -52,7 +44,6 @@ fun DetailManajerScreen(
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     LaunchedEffect(idManajer) {
-        Log.d("DetailManajerScreen", "Loading manajer with ID: $idManajer")
         viewModel.getManajerById(idManajer)
     }
 
@@ -67,31 +58,28 @@ fun DetailManajerScreen(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(
+            ExtendedFloatingActionButton(
                 onClick = onEditClick,
-                shape = MaterialTheme.shapes.medium,
-                modifier = Modifier.padding(18.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Edit,
-                    contentDescription = "Edit Manajer"
-                )
-            }
+                icon = {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = "Edit Manajer"
+                    )
+                },
+                text = { Text("Edit") }
+            )
         },
     ) { innerPadding ->
         when (val state = uiState.value) {
             is DetailManajerUiState.Loading -> LoadingScreen(modifier = modifier.fillMaxSize())
             is DetailManajerUiState.Success -> {
-                Column(
+                DetailManajerContent(
+                    manajer = state.manajer,
                     modifier = modifier
                         .fillMaxSize()
                         .padding(innerPadding)
-                        .padding(16.dp),
-                    verticalArrangement = Arrangement.Top,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    DetailManajerCard(manajer = state.manajer)
-                }
+                        .padding(16.dp)
+                )
             }
             is DetailManajerUiState.Error -> ErrorScreen(
                 retryAction = { viewModel.getManajerById(idManajer) }
@@ -101,38 +89,86 @@ fun DetailManajerScreen(
 }
 
 @Composable
-fun DetailManajerCard(manajer: Manajer) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp),
-        shape = MaterialTheme.shapes.medium,
+fun DetailManajerContent(
+    manajer: Manajer,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Column(
+        Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+                .clip(RoundedCornerShape(16.dp)),
+            elevation = CardDefaults.cardElevation(4.dp)
         ) {
-            // Nama Manajer
-            Text(
-                text = "Nama: ${manajer.namaManajer}",
-                style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+            Column(
+                modifier = Modifier
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                DetailItem(
+                    icon = Icons.Default.Person,
+                    title = "Nama Manajer",
+                    content = manajer.namaManajer
+                )
 
-            // ID Manajer
-            Text(
-                text = "ID: ${manajer.idManajer}",
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+                Divider(
+                    modifier = Modifier.padding(vertical = 8.dp),
+                    color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+                )
 
-            // Kontak
+                DetailItem(
+                    icon = Icons.Default.Star,
+                    title = "ID Manajer",
+                    content = manajer.idManajer
+                )
+
+                Divider(
+                    modifier = Modifier.padding(vertical = 8.dp),
+                    color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+                )
+
+                DetailItem(
+                    icon = Icons.Default.Phone,
+                    title = "Kontak",
+                    content = manajer.kontakManajer
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun DetailItem(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    title: String,
+    content: Any
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = title,
+            tint = MaterialTheme.colorScheme.primary
+        )
+        Column {
             Text(
-                text = "Kontak: ${manajer.kontakManajer}",
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                text = title,
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontWeight = FontWeight.Medium
+            )
+            Text(
+                text = content.toString(),
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface
             )
         }
     }

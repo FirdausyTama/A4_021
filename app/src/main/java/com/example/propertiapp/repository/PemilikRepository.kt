@@ -8,9 +8,9 @@ import okio.IOException
 interface PemilikRepository {
     suspend fun insertPemilik(pemilik: Pemilik)
     suspend fun getPemilik(): List<Pemilik>
-    suspend fun updatePemilik(idPemilik: String, pemilik: Pemilik)
-    suspend fun deletePemilik(idPemilik: String)
-    suspend fun getPemilikById(idPemilik: String): Pemilik
+    suspend fun updatePemilik(idPemilik: Int, pemilik: Pemilik)
+    suspend fun deletePemilik(idPemilik: Int)
+    suspend fun getPemilikById(idPemilik: Int): Pemilik
 }
 
 class NetworkPemilikRepository(
@@ -20,11 +20,11 @@ class NetworkPemilikRepository(
         pemilikApiService.insertPemilik(pemilik)
     }
 
-    override suspend fun updatePemilik(idPemilik: String, pemilik: Pemilik) {
+    override suspend fun updatePemilik(idPemilik: Int, pemilik: Pemilik) {
         pemilikApiService.updatePemilik(idPemilik, pemilik)
     }
 
-    override suspend fun deletePemilik(idPemilik: String) {
+    override suspend fun deletePemilik(idPemilik: Int) {
         try {
             val response = pemilikApiService.deletePemilik(idPemilik)
             if (!response.isSuccessful) {
@@ -42,7 +42,7 @@ class NetworkPemilikRepository(
     override suspend fun getPemilik(): List<Pemilik> =
         pemilikApiService.getAllPemilik()
 
-    override suspend fun getPemilikById(idPemilik: String): Pemilik {
+    override suspend fun getPemilikById(idPemilik: Int): Pemilik {
         return pemilikApiService.getPemilikById(idPemilik)
     }
 }

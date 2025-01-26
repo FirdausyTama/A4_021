@@ -23,7 +23,7 @@ object DestinasiUpdateJenis : DestinasiNavigasi {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UpdateScreenJenis(
-    idJenis: String,
+    idJenis: Int,
     onNavigateBack: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: UpdateJenisVM = viewModel(factory = PenyediaViewModel.Factory)
@@ -81,7 +81,7 @@ fun UpdateScreenJenis(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UpdateForm(
-    idJenis: String,
+    idJenis: Int,
     namaJenis: String,
     deskripsiJenis: String,
     onUpdateClick: (UpdateUiEvent) -> Unit,
@@ -95,14 +95,6 @@ fun UpdateForm(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        OutlinedTextField(
-            value = idJenis,
-            onValueChange = { idJenis = it },
-            label = { Text("ID Jenis") },
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true
-        )
-
         OutlinedTextField(
             value = namaJenis,
             onValueChange = { namaJenis = it },

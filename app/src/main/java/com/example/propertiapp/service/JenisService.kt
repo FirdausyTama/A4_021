@@ -29,11 +29,11 @@ interface JenisService {
     suspend fun getAllJenis(): List<Jenis>
 
     @GET("baca1jenis.php")
-    suspend fun getJenisById(@Query("id_jenis") idJenis: String): Jenis
+    suspend fun getJenisById(@Query("id_jenis") idJenis: Int): Jenis
 
     @PUT("editjenis.php/{id_jenis}")
-    suspend fun updateJenis(@Query("id_jenis") idJenis: String, @Body jenis: Jenis)
+    suspend fun updateJenis(@Query("id_jenis") idJenis: Int, @Body jenis: Jenis)
 
     @DELETE("deletejenis.php")
-    suspend fun deleteJenis(@Query("id_jenis") idJenis: String): Response<Void>
+    suspend fun deleteJenis(@Query("id_jenis") idJenis: Int): Response<Void>
 }

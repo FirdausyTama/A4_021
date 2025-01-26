@@ -38,7 +38,7 @@ class HomeManajerVM(private val manajerRepo: ManajerRepository): ViewModel() {
         }
     }
 
-    fun deleteManajer(idManajer: String) {
+    fun deleteManajer(idManajer: Int) {
         viewModelScope.launch {
             try {
                 manajerRepo.deleteManajer(idManajer)

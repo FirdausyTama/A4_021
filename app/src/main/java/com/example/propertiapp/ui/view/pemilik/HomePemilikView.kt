@@ -35,7 +35,7 @@ object DestinasiPemilik : DestinasiNavigasi {
 fun PemilikScreen(
     navigateToItemEntry: () -> Unit,
     modifier: Modifier = Modifier,
-    onDetailClick: (String) -> Unit = {},
+    onDetailClick: (Int) -> Unit = {},
     navigateBack: () -> Unit,
     viewModel: HomePemilikVM = viewModel(factory = PenyediaViewModel.Factory)
 ) {
@@ -100,7 +100,7 @@ fun PemilikContent(
     onAddClick: () -> Unit = {},
     pemilikUiState: PemilikUiState,
     retryAction: () -> Unit,
-    onDetailClick: (String) -> Unit,
+    onDetailClick: (Int) -> Unit,
     onDeleteClick: (Pemilik) -> Unit
 ) {
     Box(modifier = modifier) {

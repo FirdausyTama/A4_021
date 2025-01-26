@@ -28,27 +28,13 @@ interface PropertiService {
     suspend fun getAllProperti(): List<Properti>
 
     @GET("baca1properti.php")
-    suspend fun getPropertiById(@Query("id_properti") idProperti: String): Properti
+    suspend fun getPropertiById(@Query("id_properti") idProperti: Int): Properti
 
     @PUT("editproperti.php/{idProperti}")
-    suspend fun updateProperti(@Query("id_Properti") idProperti: String, @Body properti: Properti)
+    suspend fun updateProperti(@Query("id_properti") idProperti: Int, @Body properti: Properti)
 
     @DELETE("deleteproperti.php")
-    suspend fun deleteProperti(@Query("id_properti") idProperti: String): Response<Void>
+    suspend fun deleteProperti(@Query("id_properti") idProperti: Int): Response<Void>
 
-    // Jenis endpoints
-    @POST("insertjenis.php")
-    suspend fun insertJenis(@Body jenis: Jenis)
 
-    @GET("bacajenis.php")
-    suspend fun getAllJenis(): List<Jenis>
-
-    @GET("baca1jenis.php")
-    suspend fun getJenisById(@Query("id_jenis") idJenis: String): Jenis
-
-    @PUT("editjenis.php/{idJenis}")
-    suspend fun updateJenis(@Query("idJenis") idJenis: String, @Body jenis: Jenis)
-
-    @DELETE("deletejenis.php")
-    suspend fun deleteJenis(@Query("id_jenis") idJenis: String): Response<Void>
 }

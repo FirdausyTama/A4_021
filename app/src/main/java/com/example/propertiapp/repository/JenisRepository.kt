@@ -1,31 +1,32 @@
 package com.example.propertiapp.repository
 
 import com.example.propertiapp.model.Jenis
+import com.example.propertiapp.service.JenisService
 import com.example.propertiapp.service.PropertiService
 import okio.IOException
 
 interface JenisRepository {
     suspend fun insertJenis(jenis: Jenis)
     suspend fun getJenis(): List<Jenis>
-    suspend fun updateJenis(idJenis: String, jenis: Jenis)
-    suspend fun deleteJenis(idJenis: String)
-    suspend fun getJenisById(idJenis: String): Jenis
+    suspend fun updateJenis(idJenis: Int, jenis: Jenis)
+    suspend fun deleteJenis(idJenis: Int)
+    suspend fun getJenisById(idJenis: Int): Jenis
 }
 
 class NetworkJenisRepository(
-    private val propertiApiService: PropertiService
+    private val jenisApiService: JenisService
 ) : JenisRepository {
     override suspend fun insertJenis(jenis: Jenis) {
-        propertiApiService.insertJenis(jenis)
+        jenisApiService.insertJenis(jenis)
     }
 
-    override suspend fun updateJenis(idJenis: String, jenis: Jenis) {
-        propertiApiService.updateJenis(idJenis, jenis)
+    override suspend fun updateJenis(idJenis: Int, jenis: Jenis) {
+        jenisApiService.updateJenis(idJenis, jenis)
     }
 
-    override suspend fun deleteJenis(idJenis: String) {
+    override suspend fun deleteJenis(idJenis: Int) {
         try {
-            val response = propertiApiService.deleteJenis(idJenis)
+            val response = jenisApiService.deleteJenis(idJenis)
             if (!response.isSuccessful) {
                 throw IOException("Failed to delete jenis. HTTP Status Code: ${response.code()}")
             } else {
@@ -39,9 +40,9 @@ class NetworkJenisRepository(
     }
 
     override suspend fun getJenis(): List<Jenis> =
-        propertiApiService.getAllJenis()
+        jenisApiService.getAllJenis()
 
-    override suspend fun getJenisById(idJenis: String): Jenis {
-        return propertiApiService.getJenisById(idJenis)
+    override suspend fun getJenisById(idJenis: Int): Jenis {
+        return jenisApiService.getJenisById(idJenis)
     }
 }

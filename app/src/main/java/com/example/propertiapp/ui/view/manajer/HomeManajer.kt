@@ -35,7 +35,7 @@ object DestinasiManajer : DestinasiNavigasi {
 fun ManajerScreen(
     navigateToItemEntry: () -> Unit,
     modifier: Modifier = Modifier,
-    onDetailClick: (String) -> Unit = {},
+    onDetailClick: (Int) -> Unit = {},
     navigateBack: () -> Unit,
     viewModel: HomeManajerVM = viewModel(factory = PenyediaViewModel.Factory)
 ) {
@@ -100,7 +100,7 @@ fun ManajerContent(
     onAddClick: () -> Unit = {},
     manajerUiState: ManajerUiState,
     retryAction: () -> Unit,
-    onDetailClick: (String) -> Unit,
+    onDetailClick: (Int) -> Unit,
     onDeleteClick: (Manajer) -> Unit
 ) {
     Box(modifier = modifier) {
@@ -181,38 +181,6 @@ fun ManajerContent(
 }
 
 @Composable
-fun OnLoading(modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier,
-        contentAlignment = Alignment.Center
-    ) {
-        Image(
-            modifier = Modifier.size(200.dp),
-            painter = painterResource(R.drawable.loading),
-            contentDescription = stringResource(R.string.loading)
-        )
-    }
-}
-
-@Composable
-fun OnError(retryAction: () -> Unit, modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.error),
-            contentDescription = ""
-        )
-        Text(text = stringResource(R.string.loading_failed), modifier = Modifier.padding(16.dp))
-        Button(onClick = retryAction) {
-            Text(stringResource(R.string.retry))
-        }
-    }
-}
-
-@Composable
 fun ManajerCard(
     manajer: Manajer,
     onClick: () -> Unit,
@@ -265,6 +233,38 @@ fun ManajerCard(
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
+        }
+    }
+}
+
+@Composable
+fun OnLoading(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier,
+        contentAlignment = Alignment.Center
+    ) {
+        Image(
+            modifier = Modifier.size(200.dp),
+            painter = painterResource(R.drawable.loading),
+            contentDescription = stringResource(R.string.loading)
+        )
+    }
+}
+
+@Composable
+fun OnError(retryAction: () -> Unit, modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.error),
+            contentDescription = ""
+        )
+        Text(text = stringResource(R.string.loading_failed), modifier = Modifier.padding(16.dp))
+        Button(onClick = retryAction) {
+            Text(stringResource(R.string.retry))
         }
     }
 }

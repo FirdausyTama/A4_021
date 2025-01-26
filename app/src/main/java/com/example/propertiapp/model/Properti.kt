@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Properti(
     @SerialName("id_properti")
-    val idProperti: String,
+    val idProperti: Int = 0,
 
     @SerialName("nama_properti")
     val namaProperti: String,

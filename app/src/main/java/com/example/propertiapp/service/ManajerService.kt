@@ -26,11 +26,11 @@ interface ManajerService {
     suspend fun getAllManajer(): List<Manajer>
 
     @GET("baca1manajer.php")
-    suspend fun getManajerById(@Query("id_manajer") idManajer: String): Manajer
+    suspend fun getManajerById(@Query("id_manajer") idManajer: Int): Manajer
 
-    @PUT("editmanajer.php/{idManajer}")
-    suspend fun updateManajer(@Query("id_manajer") idManajer: String, @Body manajer: Manajer)
+    @PUT("editmanajer.php")
+    suspend fun updateManajer(@Query("id_manajer") idManajer: Int, @Body manajer: Manajer)
 
     @DELETE("deletemanajer.php")
-    suspend fun deleteManajer(@Query("id_manajer") idManajer: String): Response<Void>
+    suspend fun deleteManajer(@Query("id_manajer") idManajer: Int): Response<Void>
 }

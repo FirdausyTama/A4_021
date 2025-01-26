@@ -21,7 +21,7 @@ class DetailManajerVM(private val repository: ManajerRepository) : ViewModel() {
     private val _uiState = MutableStateFlow<DetailManajerUiState>(DetailManajerUiState.Loading)
     val uiState: StateFlow<DetailManajerUiState> = _uiState.asStateFlow()
 
-    fun getManajerById(idManajer: String) {
+    fun getManajerById(idManajer: Int) {
         viewModelScope.launch {
             _uiState.value = DetailManajerUiState.Loading
             try {
@@ -37,7 +37,7 @@ class DetailManajerVM(private val repository: ManajerRepository) : ViewModel() {
         }
     }
 
-    fun updateManajer(idManajer: String, manajer: Manajer) {
+    fun updateManajer(idManajer: Int, manajer: Manajer) {
         viewModelScope.launch {
             _uiState.value = DetailManajerUiState.Loading
             try {

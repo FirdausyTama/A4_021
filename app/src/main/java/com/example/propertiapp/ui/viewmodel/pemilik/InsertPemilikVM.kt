@@ -33,7 +33,7 @@ data class InsertPemilikUiState(
 )
 
 data class InsertPemilikUiEvent(
-    val idPemilik: String = "",
+    val idPemilik: Int = 0,
     val namaPemilik: String = "",
     val kontakPemilik: String = ""
 )

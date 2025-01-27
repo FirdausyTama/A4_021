@@ -1,5 +1,6 @@
 package com.example.propertiapp.ui.viewmodel
 
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -16,6 +17,7 @@ import com.example.propertiapp.navigasi.PengelolaHalaman
 fun PropertiApp(modifier: Modifier = Modifier) {
     Scaffold(
         modifier = Modifier,
+        contentWindowInsets = WindowInsets(0)
         //topBar = {TopAppBar(scrollBehavior = scrollBehavior)}
     ) {
         Surface(
